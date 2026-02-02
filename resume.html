@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Resume of Frédéric Camblor</title>
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"> -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" rel="stylesheet">
+    <style type="text/css">
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800);
+@charset "utf-8";
+@-webkit-viewport   { width: device-width; }
+@-moz-viewport      { width: device-width; }
+@-ms-viewport       { width: device-width; }
+@-o-viewport        { width: device-width; }
+@viewport           { width: device-width; }
+
+body{
+  font-family: 'Open Sans', Arial, Tahoma;
+  font-weight: 400;
+  color: #363636;
+  background: #334960;
+}
+blockquote {
+  font-size: 1em;
+}
+
+.container{
+  margin-top: 80px;
+  margin-bottom: 15px;
+  background: #fff;
+}
+
+#photo-header{
+  margin-top: -75px;
+}
+#photo{
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 5px;
+  background: #334960;
+  display: inline-block;
+}
+#photo img{
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+#text-header h1{
+  margin: 0;
+  padding: 0;
+  font-size: 1.5em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+}
+#text-header h1::first-line{
+  font-size: 1.5em;
+  font-weight: 800;
+  line-height: 1.5em;
+}
+#text-header h1 span{
+  color: #334960;
+  opacity: 0.7;
+}
+#text-header h1 sup{
+  opacity: 0.5;
+}
+#text-header:after{
+  width: 100%;
+  height: 3px;
+  border-bottom: 1px solid #ddd;
+  margin-top: 15px;
+  content: '';
+  display: block;
+}
+
+.box{
+  padding-bottom: 10px;
+  margin-bottom: 25px;
+}
+.box h2{
+  color: #227c74;
+  font-size: 1.5em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+#awards,
+#education{
+  margin-top: 20px;
+  margin-bottom: 0;
+  position: relative;
+  padding: 1em 0;
+  list-style: none;
+}
+#awards:before,
+#education:before {
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  left: 35px;
+  top: 0;
+  content: ' ';
+  display: block;
+  background: #32475c;
+  background: -moz-linear-gradient(top,  #ffffff 0%, #32475c 7%, #32475c 89%, #ffffff 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(7%,#32475c), color-stop(89%,#32475c), color-stop(100%,#ffffff));
+  background: -webkit-linear-gradient(top,  #ffffff 0%,#32475c 7%,#32475c 89%,#ffffff 100%);
+  background: -o-linear-gradient(top,  #ffffff 0%,#32475c 7%,#32475c 89%,#ffffff 100%);
+  background: -ms-linear-gradient(top,  #ffffff 0%,#32475c 7%,#32475c 89%,#ffffff 100%);
+  background: linear-gradient(to bottom,  #ffffff 0%,#32475c 7%,#32475c 89%,#ffffff 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 );
+}
+#awards li,
+#education li{
+  width: 100%;
+  z-index: 2;
+  position: relative;
+  float: left;
+}
+#awards .year,
+#education .year{
+  width: 14%;
+  background: #fff;
+  padding: 10px;
+  font-weight: 700;
+  display: inline-block;
+}
+#awards .description,
+#education .description{
+  width: 83%;
+  display: inline-block;
+  background: #eee;
+  margin-bottom: 10px;
+  position: relative;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+#awards .description:after,
+#education .description:after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  right: 0;
+  left: -16px;
+  height: 0;
+  width: 0;
+  border: solid transparent;
+  border-right-color: #eee;
+  border-width: 8px;
+  pointer-events: none;
+}
+#awards .description h3,
+#education .description h3{
+  font-size: 1.2em;
+  margin: 0;
+  padding: 0;
+  font-weight: 700;
+}
+#awards .description p,
+#education .description p{
+  margin-top: 5px;
+  padding: 0;
+}
+
+.job{
+  margin-bottom: 15px;
+}
+.job .details {
+  margin-left: 3%;
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #eee;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+.job .where{
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.job .year{
+  opacity: 0.7;
+}
+.job .profession{
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.job .description{
+  line-height: 1.5em;
+}
+.job .highlights{
+  padding: 5px 0;
+  font-weight: bold;
+}
+.job .job-details {
+  padding-left: 5%;
+  width: 100%;
+}
+.publication {
+  margin-bottom: 0;
+}
+.publication .name{
+  font-size: 1em;
+  font-weight: bold;
+}
+.publication .year{
+    opacity: 0.7;
+}
+.publication p{
+  margin: 0;
+  padding-top: 10px;
+}
+
+.contact-item{
+  width: 100%;
+  float: left;
+}
+.contact-item .icon{
+  padding: 10px;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  color: #32475c;
+  background: #eee;
+}
+.contact-item:last-child .icon{
+  border-bottom: none;
+}
+.contact-item .title{
+  width: 80%;
+  width: calc(100% - 55px);
+  font-weight: 700;
+  opacity: 0.9;
+}
+.contact-item .title.only{
+  margin-top: 10px;
+}
+.contact-item .description{
+  width: 80%;
+  width: calc(100% - 55px);
+  color: #334960;
+}
+
+.item-interests,
+.item-skills{
+  height: 30px;
+  color: #334960;
+  padding: 5px 10px;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+.interest,
+.skill{
+  color: #fff;
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  padding: 5px 10px;
+  background: #32475c;
+  position: relative;
+  font-size: .85em;
+}
+.skill-level {
+  background-color: #227c74;
+  border-radius: 4px;
+  color: #fff;
+  padding: 1px 8px;
+  font-size: .75em;
+  position: absolute;
+  margin: 1px 10px;
+}
+.skill-level-specialist {
+  background-color: #d4af37;
+  color: #000;
+}
+.skill-level-advanced {
+  background-color: #c0c0c0;
+  color: #000;
+}
+
+.bluesky-emoji {
+  font-size: 1.25em;
+  line-height: 1em;
+  vertical-align: text-bottom;
+}
+
+#language-skills .skill{
+  margin: 10px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+
+    </style>
+    <style type="text/css" media="print">
+    body {
+  font-size: .95em;
+  -webkit-print-color-adjust: exact;
+}
+
+a[href]:after {
+  content: none !important;
+}
+
+#photo{
+  display: none;
+}
+
+.box {
+  margin-bottom: -10px;
+}
+
+blockquote,
+#education,
+#awards,
+.contact-item,
+.publication,
+.skills,
+.interests {
+  page-break-inside: avoid;
+}
+
+.col-sm-5{
+  width: 40%;
+  padding: 0 15px;
+}
+
+.col-sm-7{
+  width: 60%;
+  padding: 0 15px;
+}
+
+.skills .col-sm-offset-1,
+.interests .col-sm-offset-1{
+  margin-top: -10px;
+  margin-bottom: 5px;
+}
+
+#education {
+  margin: 0;
+  margin-bottom: -20px;
+}
+#awards:before,
+#education:before {
+  background: none;
+}
+
+#awards .description,
+#education .description,
+.job .details {
+  border: 1px solid #eee;
+}
+.publication,
+.publication .panel-heading,
+.publication .name{
+  margin: 0;
+  padding: 0 5px;
+  border: none;
+}
+.publication .panel-body {
+  padding: 0 10px;
+  margin: 0;
+}
+
+.badge {
+  margin: 0;
+}
+
+.list-group-item{
+  border: none;
+  margin: 0;
+  padding: 5px 15px;
+}
+.list-group-item:after{
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 0;
+  left: -1px;
+  height: 0;
+  width: 0;
+  border: solid transparent;
+  border-right-color: #999;
+  border-width: 4px;
+  pointer-events: none;
+ }
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <div id="photo-header" class="text-center">
+            <!-- PHOTO (AVATAR) -->
+            <div id="photo">
+              <img src="https:&#x2F;&#x2F;media.licdn.com&#x2F;dms&#x2F;image&#x2F;v2&#x2F;C4D03AQHZ4RJJlpEobA&#x2F;profile-displayphoto-shrink_200_200&#x2F;profile-displayphoto-shrink_200_200&#x2F;0&#x2F;1540212336555?e&#x3D;1765411200&amp;v&#x3D;beta&amp;t&#x3D;evMZu8Zdbp4igCqImGWkHXPgOYtYbXNhmkGZAQ4oNF4" alt="avatar">
+            </div>
+            <div id="text-header" >
+              <h1>Frédéric Camblor<br><span>Senior Fullstack Software Engineer on Web&#x2F;Mobile apps</span></h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-7">
+          <!-- ABOUT ME -->
+          <div class="box">
+            <h2><i class="fas fa-user ico"></i> About</h2>
+            <p>Experienced full-stack web developer with a proven history of building impactful web and mobile applications, combining technical excellence, product mindset, and user experience focus.
+</p>
+          </div>
+          <!-- LOOKING FOR -->
+          <div class="box">
+            <h2><i class="fas fa-bullseye ico"></i> Looking For</h2>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <strong>Staff Engineering</strong> trajectory (adapting from ESN <strong>service expertise</strong> model to software editor structure - willing learning curve)
+
+              </li>
+              <li class="list-group-item">
+                Strong <strong>AI focus</strong>: DevX or GenAI
+
+              </li>
+              <li class="list-group-item">
+                Environment where <strong>initiative quickly produces measurable on-the-ground impact</strong>
+
+              </li>
+            </ul>
+          </div>
+          <!-- OFFERING -->
+          <div class="box">
+            <h2><i class="fas fa-gift ico"></i> What I Offer</h2>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <strong>Motivation &amp; curiosity</strong>: reviewing <strong>1000+ DevoxxFR</strong> talk proposals annually since 2019 as selection committee member
+
+              </li>
+              <li class="list-group-item">
+                <strong>Proven impact</strong>: BDX I/O conference creation, ViteMaDose handling <strong>1M users/min</strong> peaks, Voxxrin SaaS, <strong>10-year</strong> worldwide CHEP project
+
+              </li>
+              <li class="list-group-item">
+                <strong>Team dynamics &amp; knowledge sharing</strong>: fostered knowledge-sharing culture at 4SH&#39;s <strong>~50-dev</strong> technical community, enabling mutual help and collective skill growth
+
+              </li>
+              <li class="list-group-item">
+                <strong>Expertise areas</strong>
+
+                <div style="margin-top: 10px; margin-left: 20px;">
+                  <div>– <strong>AI</strong> applied daily: agents, MCP, assistant benchmarking, RAG
+</div>
+                </div>
+                <div style="margin-top: 10px; margin-left: 20px;">
+                  <div>– <strong>Fullstack TS</strong>: JS/TS trainings, Angular/React/Vue3, mobile apps on stores, NestJS
+</div>
+                </div>
+                <div style="margin-top: 10px; margin-left: 20px;">
+                  <div>– <strong>Strong JVM</strong> background: former JUG Leader
+</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <!-- WORK EXPERIENCE -->
+          <div class="box">
+            <h2><i class= "fas fa-suitcase ico"></i> Work Experience</h2>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      4SH
+                    </div>
+                    <div class="address">
+                      <a href="https:&#x2F;&#x2F;www.4sh.fr" target= "_blank"><i class="fas fa-globe ico"></i> https:&#x2F;&#x2F;www.4sh.fr</a>
+                    </div>
+                    <div class="year">July 2011 – Present</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="profession">Senior Software Engineer</div>
+                    <div class="description">
+                      I had the opportunity to accompany 4SH in its growth, from a small team of about ten people to more than 100 employees spread across several agencies. This evolution involved rethinking our practices, tools, and organization in order to grow without losing sight of our founding values. I am proud to have contributed to this transformation, which today enables 4SH to design and deliver high-impact digital products.
+
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">From 10 to &gt;110 people
+</li>
+                        <li class="list-group-item">Tech leader on various projects of teams from 2 to 20
+</li>
+                        <li class="list-group-item">Worked for customers in Logistics (Cinatis, CHEP) and Real Estate (Naxos)
+</li>
+                        <li class="list-group-item">Dev Communities (59 devs) animator
+</li>
+                        <li class="list-group-item">AI (RAG, daily usage, vibe coding, tooling)
+</li>
+                        <li class="list-group-item">Training materials conceptor
+</li>
+                        <li class="list-group-item">Trainer on multiple courses (TS, JS, Angular, Git)
+</li>
+                        <li class="list-group-item">Speaker on multiple internal workshops
+</li>
+                        <li class="list-group-item">Hard skills: Typescript, Git, Trainer, Angular, AI, Java, Spring, Maven
+</li>
+                        <li class="list-group-item">Soft skills: Technical leadership at the company level, Tech scouting, Mentoring and knowledge sharing, Complex problem solving, Clear communication, Ownership and accountability
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      DevXWeb (SASU)
+                    </div>
+                    <div class="year">December 2023 – Present</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="profession">Founder</div>
+                    <div class="description">
+                      SASU created in order to monetize and sustain the developments made on the Voxxrin application.
+
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">Funded the company
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      BDX I&#x2F;O Conference
+                    </div>
+                    <div class="address">
+                      <a href="https:&#x2F;&#x2F;www.bdxio.fr" target= "_blank"><i class="fas fa-globe ico"></i> https:&#x2F;&#x2F;www.bdxio.fr</a>
+                    </div>
+                    <div class="year">September 2013 – January 2017</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="profession">Founder and President</div>
+                    <div class="description">
+                      Launch and organization of the BDX I/O conference for developers in the Bordeaux region.
+
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">512 attendees and 50 speakers
+</li>
+                        <li class="list-group-item">Event sold out few weeks before the conference
+</li>
+                        <li class="list-group-item">Marketing, Logistics, Partnerships
+</li>
+                        <li class="list-group-item">40k€-50k€ budget
+</li>
+                        <li class="list-group-item">Lots of network links with tech ecosystem (both at Bordeaux and France levels)
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      ViteMaDose
+                    </div>
+                    <div class="address">
+                      <a href="https:&#x2F;&#x2F;vitemadose.covidtracker.fr&#x2F;" target= "_blank"><i class="fas fa-globe ico"></i> https:&#x2F;&#x2F;vitemadose.covidtracker.fr&#x2F;</a>
+                    </div>
+                    <div class="year">April 2021 – April 2023</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="profession">Frontend Web Developer</div>
+                    <div class="description">
+                      Volunteer work for the ViteMaDose website, an initiative launched by Guillaume Rozier to help people find COVID vaccination slots during a period of high demand for vaccines. Implementation of the ViteMaDose web/mobile application (PWA), participation in product/UX organization and coordination of dozens of volunteers who contributed to the initiative.
+
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">Regular peaks in traffic exceeding 1.2 million daily unique users
+</li>
+                        <li class="list-group-item">Peaks at 100k users/minutes
+</li>
+                        <li class="list-group-item">Hard skills: Typescript, vite, lit-element
+</li>
+                        <li class="list-group-item">Soft skills: Compromise Agreements, Open-source development
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      SQLI
+                    </div>
+                    <div class="address">
+                      <a href="https:&#x2F;&#x2F;www.sqli.com&#x2F;" target= "_blank"><i class="fas fa-globe ico"></i> https:&#x2F;&#x2F;www.sqli.com&#x2F;</a>
+                    </div>
+                    <div class="year">October 2006 – July 2011</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="profession">J2EE Tech Lead &amp; Trainer</div>
+                    <div class="description">
+                      Participation in pre-sales and then in the launch of the Bordeaux Service Center, which increased the Bordeaux agency&#39;s workforce from 15 people when I arrived in 2006 to more than 75 people when I left in 2011. Support for teams at the Bordeaux Service Center, particularly on projects for Banque Postale.
+
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">Participated to Service Center creation
+</li>
+                        <li class="list-group-item">Worked for La Banque Postale, Bordeaux Metropole, Lectra
+</li>
+                        <li class="list-group-item">Trainer on multiple courses: Maven, Java, J2EE, Git, Liferay
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+          <!-- VOLUNTEER -->
+          <div class="box">
+            <h2><i class= "fas fa-users ico"></i> Volunteer</h2>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">BDX I&#x2F;O Association</div>
+                    <div class="year">November 2013 – December 2016</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="profession">Co-creator of the BDX I&#x2F;O conference for developers in Bordeaux</div>
+                    <div class="description">
+                      Led volunteer team to organize and scale a successful tech conference in Bordeaux, managing logistics, budget, marketing, and attendee experience from 256 to 800+ attendees
+
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">Created and led a team of 7 volunteers to organize a 256-attendee tech conference in Bordeaux
+</li>
+                        <li class="list-group-item">Raised a €15k budget from local tech companies and managed venue logistics at ENSEIRB amphitheaters
+</li>
+                        <li class="list-group-item">Achieved a sold-out first edition and scaled the event to 512 attendees in subsequent years
+</li>
+                        <li class="list-group-item">Facilitated video recording, livestreaming, ticketing, spatial organization, and attendee catering
+</li>
+                        <li class="list-group-item">Built long-term engagement with attendees and corporate partners, enabling growth to 800+ attendees at the Bordeaux Convention Center
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">Devoxx France</div>
+                    <div class="year">December 2019 – Present</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="profession">Member of the Devoxx France talks selection committee</div>
+                    <div class="description">
+                      Reviewed 1000+ talk proposals annually for Devoxx France, contributing to community engagement, technical discussions, and incremental UX improvements of the CFP tool.
+
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">Reviewed over 1000 talk proposals each year, ensuring high-quality content selection
+</li>
+                        <li class="list-group-item">Engaged with the French and international developer community on current technical challenges
+</li>
+                        <li class="list-group-item">Provided feedback and improvements to the CFP platform to enhance user experience
+</li>
+                        <li class="list-group-item">Actively participated in knowledge sharing and trend spotting within the community
+</li>
+                        <li class="list-group-item">Contributed to the continuous evolution of conference content and submission processes
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+          <!-- PROJECTS -->
+          <div class="box">
+            <h2><i class= "fas fa-code-branch ico"></i> Projects</h2>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      AI Empowered DevX Program
+                    </div>
+                    <div class="description">
+                      I joined the DevX team to work on scaling up DevX AI at Betclic.
+
+                    </div>
+                    <div class="year">September 2025 – Present</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="profession">DevX team</div>
+                    <div class="description">
+                      
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">DevX for 600+ devs
+</li>
+                        <li class="list-group-item">Tracking AI adoption metrics
+</li>
+                        <li class="list-group-item">Evaluated and benchmarked AI coding assistants
+</li>
+                        <li class="list-group-item">Defined best practices and guardrails for AI usage across multiple tech stacks
+</li>
+                        <li class="list-group-item">Provided senior-level guidance on AI tooling, context engineering, and developer enablement
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      Training materials designer and trainer at 4SH Learning
+                    </div>
+                    <div class="description">
+                      I was involved in the design of various materials for 4SH&amp;#39;s Learning offering.
+
+                    </div>
+                    <div class="year">November 2023 – Present</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="profession">DevX team</div>
+                    <div class="description">
+                      
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">Java: Review of the course outline and materials
+</li>
+                        <li class="list-group-item">JS &amp; TS (fundamentals 3d): Design the course outline, content, and exercises
+</li>
+                        <li class="list-group-item">Typescript (fundamentals 2d): Design the course outline, content, and exercises
+</li>
+                        <li class="list-group-item">Angular (advanced 3d): Evolution of media to incorporate the concepts of Signals
+</li>
+                        <li class="list-group-item">Git (advanced 1d): Design the course outline, content, and exercises
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      Voxxrin 3
+                    </div>
+                    <div class="description">
+                      Voxxrin is a conference companion SaaS, providing a good experience when attending a conference (scheduling, favorites management, gathering feedbacks for speakers..)
+
+                    </div>
+                    <div class="address">
+                      <a href="https:&#x2F;&#x2F;www.voxxr.in" target= "_blank"><i class="fas fa-globe ico"></i> https:&#x2F;&#x2F;www.voxxr.in</a>
+                    </div>
+                    <div class="year">April 2023 – Present</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="description">
+                      
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">Marketted the solution through different conferences
+</li>
+                        <li class="list-group-item">Implemented all the fetures
+</li>
+                        <li class="list-group-item">Operated the infrastructure
+</li>
+                        <li class="list-group-item">Gathered and prioritized users&#39; feedbacks
+</li>
+                        <li class="list-group-item">Voxxrin was my first experience as a Software Editor
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      Marguerite Mobile
+                    </div>
+                    <div class="description">
+                      The Marguerite Mobile app aims to provide support to Naxos real estate advisors (Arche group) on the go. I am working as tech lead on setting up the technical stack and integrating the various screens of the app developed in React Native.
+
+                    </div>
+                    <div class="year">March 2024 – June 2025</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="description">
+                      
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">Geoprospecting map (MapBox) for advisors
+</li>
+                        <li class="list-group-item">Application build matrix (local/remote, android/ios, appstore/enterprise, physical device/emulator)
+</li>
+                        <li class="list-group-item">White label management and packaging
+</li>
+                        <li class="list-group-item">Implementation of “speech to form” based on the Illuin Voice AI solution
+</li>
+                        <li class="list-group-item">Electronic document signing (visit vouchers)
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      CHEP Carrier Management Suite
+                    </div>
+                    <div class="description">
+                      Full featured app suite designed for carriers &amp;amp; drivers worldwide (EU, US, Australia markets). Made of a Mobile hybrid application, an API Backend and a Desktop backoffice webapp.
+
+                    </div>
+                    <div class="year">January 2015 – November 2023</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="description">
+                      
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">~4000 daily single users (as of end 2023)
+</li>
+                        <li class="list-group-item">Available both on Android and iOS
+</li>
+                        <li class="list-group-item">At the origin of the project in 2014 and developed it over 9 years across multiple major milestones
+</li>
+                        <li class="list-group-item">Went from 1-army developer to a 10-15 people team size (with 6-7 full time devs during peaks)
+</li>
+                        <li class="list-group-item">M1(2014): Bootstrapped the initial Carrier Mobile App for materials tracking (pick &amp; drop)
+</li>
+                        <li class="list-group-item">M2(2016): Creation of a backend monolith bridging with other CHEP Services (SAP, TMS, CRM, EAI)
+</li>
+                        <li class="list-group-item">M3(2016): 16KLoC codebase incrementally migrated to Typescript
+</li>
+                        <li class="list-group-item">M4(2017): Backoffice app creation for CHEP Operators
+</li>
+                        <li class="list-group-item">M5(2018): Industrialised release processes with docker builds in Google Cloud Build and Bitrise
+</li>
+                        <li class="list-group-item">M6(2020): New TMS integration: Blueyonder
+</li>
+                        <li class="list-group-item">M7(2021): New lightweight app named CICO
+</li>
+                        <li class="list-group-item">M8(2021): Moved from enterprise store to App Stores
+</li>
+                        <li class="list-group-item">M9(2023): Introduced Kafka into the backend stack, transitioning to an event-based architecture
+</li>
+                        <li class="list-group-item">160KLoC of TS + 170KLoC of Java when I handed over the project in 2024
+</li>
+                        <li class="list-group-item">Hard skills: Typescript, BackboneJS, Java, Apache Cordova, Spring Boot, Bitrise, Google Cloud Build, Angular, Firebase, Mapstruct, JPA, Kafka, Microsoft Azure
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job clearfix">
+                <div class="row">
+                  <div class="details">
+                    <div class="where">
+                      ViteMaDose
+                    </div>
+                    <div class="description">
+                      The ViteMaDose project is an initiative by Guillaume Rozier (CovidTracker) that was designed to make it easier to find COVID vaccination slots during a period of vaccine shortages during the COVID pandemic in 2021.
+
+                    </div>
+                    <div class="year">April 2021 – April 2023</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="job-details col-xs-11">
+                    <div class="description">
+                      
+                      <div class="highlights">Highlights</div>
+                      <ul class="list-group">
+                        <li class="list-group-item">Unified frontend aggregating vaccine slot availability across major booking platforms
+</li>
+                        <li class="list-group-item">High-load PWA implementation handling up to 1.2M daily users and 100k+ users per minute
+</li>
+                        <li class="list-group-item">Rapid delivery of the Chronodose feature within days following national policy changes
+</li>
+                        <li class="list-group-item">Product and UX co-design for a large-scale citizen-facing application
+</li>
+                        <li class="list-group-item">Coordination and onboarding of dozens of open-source volunteer contributors
+</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-5">
+          <!-- CONTACT -->
+          <div class="box clearfix">
+            <h2><i class="fas fa-bullseye ico"></i> Contact</h2>
+            <div class="contact-item">
+              <div class="icon pull-left text-center"><span class="fas fa-map-marker fa-fw"></span></div>
+              <div class="title pull-right">37 rue Jean Moulin</div>
+              <div class="title  pull-right">Villenave d&#39;Ornon (Bordeaux suburbs), Nouvelle Aquitaine 33140 FR</div>
+            </div>
+            <div class="contact-item">
+              <div class="icon pull-left text-center"><span class="fas fa-phone fa-fw"></span></div>
+              <div class="title only pull-right">(+33)636007081</div>
+            </div>
+            <div class="contact-item">
+              <div class="icon pull-left text-center"><span class="fas fa-envelope fa-fw"></span></div>
+              <div class="title only pull-right"><a href="mailto:fcamblor@gmail.com" target="_blank">fcamblor@gmail.com</a></div>
+            </div>
+            <div class="contact-item">
+              <div class="icon pull-left text-center"><span class="fas fa-globe fa-fw"></span></div>
+              <div class="title only pull-right"><a href="https:&#x2F;&#x2F;fcamblor.wordpress.com&#x2F;" target="_blank">https:&#x2F;&#x2F;fcamblor.wordpress.com&#x2F;</a></div>
+            </div>
+            <div class="contact-item">
+              <div class="icon pull-left text-center"><span class="bluesky-emoji">🦋</span></div>
+              <div class="title pull-right">Bluesky</div>
+              <div class="description pull-right"><a href="https:&#x2F;&#x2F;bsky.app&#x2F;fred.camblor.fr" target="_blank">fred.camblor.fr</a></div>
+            </div>
+            <div class="contact-item">
+              <div class="icon pull-left text-center"><span class="fab fa-linkedin fa-fw"></span></div>
+              <div class="title pull-right">LinkedIn</div>
+              <div class="description pull-right"><a href="https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;frederic-camblor&#x2F;" target="_blank">frederic-camblor</a></div>
+            </div>
+            <div class="contact-item">
+              <div class="icon pull-left text-center"><span class="fab fa-twitter fa-fw"></span></div>
+              <div class="title pull-right">Twitter</div>
+              <div class="description pull-right"><a href="https:&#x2F;&#x2F;x.com&#x2F;fcamblor" target="_blank">fcamblor</a></div>
+            </div>
+          </div>
+          <!-- EDUCATION -->
+          <div class="box">
+            <h2><i class="fas fa-university ico"></i> Education</h2>
+            <ul id="education" class="clearfix">
+              <li>
+                <div class="year pull-left">2013 2016</div>
+                <div class="description pull-right">
+                  <h3>MIAGe (Méthodes Informatiques Appliquées à la Gestion</h3>
+                  <div class="where"></div>
+                  <p><i class= "fas fa-graduation-cap ico"></i> Bachelor</p>
+                  <p>Software Development</p>
+                </div>
+              </li>
+              <li>
+                <div class="year pull-left">2003 2006</div>
+                <div class="description pull-right">
+                  <h3>Université Bordeaux I</h3>
+                  <div class="where"></div>
+                  <p><i class= "fas fa-graduation-cap ico"></i> Licence</p>
+                  <p>Software Development</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <!-- SKILLS -->
+          <div class="box">
+            <h2><i class="fas fa-tasks ico"></i> Skills</h2>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  Web Development
+                  <span class="skill-level skill-level-specialist">Specialist</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">HTML</span>
+                <span class= "skill badge">CSS</span>
+                <span class= "skill badge">JavaScript</span>
+                <span class= "skill badge">TypeScript</span>
+                <span class= "skill badge">Angular</span>
+                <span class= "skill badge">Vue3</span>
+                <span class= "skill badge">LitElement</span>
+                <span class= "skill badge">BackboneJS</span>
+                <span class= "skill badge">SPA</span>
+                <span class= "skill badge">Browser DevTools</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  Hybrid &amp; Progressive Web Apps
+                  <span class="skill-level skill-level-specialist">Specialist</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">Apache Cordova</span>
+                <span class= "skill badge">PWA</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  Backend Development
+                  <span class="skill-level skill-level-specialist">Specialist</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">Java</span>
+                <span class= "skill badge">Spring Boot</span>
+                <span class= "skill badge">Node.js</span>
+                <span class= "skill badge">Maven</span>
+                <span class= "skill badge">JPA</span>
+                <span class= "skill badge">Spring</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  Database &amp; State Management
+                  <span class="skill-level skill-level-specialist">Specialist</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">Firestore</span>
+                <span class= "skill badge">SQL</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  Version Control &amp; Build Automation
+                  <span class="skill-level skill-level-specialist">Specialist</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">Git</span>
+                <span class= "skill badge">Build automation</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  Software Architecture &amp; Design
+                  <span class="skill-level skill-level-specialist">Specialist</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">Fullstack architecture</span>
+                <span class= "skill badge">Solution architecture</span>
+                <span class= "skill badge">Monorepo strategies</span>
+                <span class= "skill badge">Modular design</span>
+                <span class= "skill badge">Event-based architecture</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  Teaching &amp; Mentoring
+                  <span class="skill-level skill-level-specialist">Specialist</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">Trainer</span>
+                <span class= "skill badge">Knowledge sharing</span>
+                <span class= "skill badge">Mentoring</span>
+                <span class= "skill badge">Technical leadership</span>
+                <span class= "skill badge">Ownership and accountability</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  React Native
+                  <span class="skill-level skill-level-advanced">Advanced</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">React Native</span>
+                <span class= "skill badge">Expo</span>
+                <span class= "skill badge">EAS</span>
+                <span class= "skill badge">Realm Database</span>
+                <span class= "skill badge">Zustand</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  Cloud &amp; DevOps
+                  <span class="skill-level skill-level-advanced">Advanced</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">Google Cloud Build</span>
+                <span class= "skill badge">Bitrise</span>
+                <span class= "skill badge">Docker</span>
+                <span class= "skill badge">Firebase</span>
+                <span class= "skill badge">Microsoft Azure</span>
+                <span class= "skill badge">Kafka</span>
+                <span class= "skill badge">Sentry</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  Testing &amp; Quality Assurance
+                  <span class="skill-level skill-level-advanced">Advanced</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">Automatic testing</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  AI
+                  <span class="skill-level skill-level-advanced">Advanced</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">AI tooling</span>
+                <span class= "skill badge">RAG</span>
+                <span class= "skill badge">Context engineering</span>
+                <span class= "skill badge">DevX AI</span>
+                <span class= "skill badge">Prompt engineering</span>
+              </div>
+            </div>
+            <div class="skills clearfix">
+              <div class="item-skills">
+                  Product &amp; UX
+                  <span class="skill-level skill-level-advanced">Advanced</span>
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+                <span class= "skill badge">Product management</span>
+                <span class= "skill badge">UX design</span>
+              </div>
+            </div>
+          </div>
+          <!-- PUBLICATIONS -->
+          <div class="box">
+            <h2><i class="fas fa-book ico"></i> Publications</h2>
+            <div class="publication panel panel-default">
+              <div class="panel-heading">
+                <div class="name panel-title">TypeScript dès lundi sur votre App Legacy (Frédéric Camblor)</div>
+              </div>
+              <div class="panel-body">
+                <div class="publisher"><i class= "fas fa-bookmark ico"></i> Devoxx France</div>
+                <div class="year">23 April  2017</div>
+                <div class="address">
+                  <a href="https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;r0zxw423gm4" target= "_blank"><i class="fas fa-globe ico"></i> https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;r0zxw423gm4</a>
+                </div>
+                <p>Presented a talk at Devoxx France 2017 on progressively migrating a legacy JavaScript application to TypeScript, covering strategies and best practices.
+</p>
+              </div>
+            </div>
+            <div class="publication panel panel-default">
+              <div class="panel-heading">
+                <div class="name panel-title">Et si votre backend était une Google Spreadsheet ?</div>
+              </div>
+              <div class="panel-body">
+                <div class="publisher"><i class= "fas fa-bookmark ico"></i> Devoxx France</div>
+                <div class="year">24 April  2017</div>
+                <div class="address">
+                  <a href="https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;ZPIgNvMhFZA" target= "_blank"><i class="fas fa-globe ico"></i> https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;ZPIgNvMhFZA</a>
+                </div>
+                <p>Delivered a talk on Google Spreadsheets at Devoxx France 2017, exploring advanced features and practical use cases.
+</p>
+              </div>
+            </div>
+            <div class="publication panel panel-default">
+              <div class="panel-heading">
+                <div class="name panel-title">Back to Basics : Ne perdez plus votre Temps avec les Dates</div>
+              </div>
+              <div class="panel-body">
+                <div class="publisher"><i class= "fas fa-bookmark ico"></i> Devoxx France</div>
+                <div class="year">25 April  2019</div>
+                <div class="address">
+                  <a href="https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;_ApiF_7MzM0" target= "_blank"><i class="fas fa-globe ico"></i> https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;_ApiF_7MzM0</a>
+                </div>
+                <p>Explores the complexities of time management in client/server applications, covering timezones, DST, ISO 8601, and real-world scenarios to help developers ask the right questions when handling dates and times.
+</p>
+              </div>
+            </div>
+            <div class="publication panel panel-default">
+              <div class="panel-heading">
+                <div class="name panel-title">Coder des WebComponents en 2021: simple, léger et rapide avec lit-element et Vite</div>
+              </div>
+              <div class="panel-body">
+                <div class="publisher"><i class= "fas fa-bookmark ico"></i> 4SH Workshop</div>
+                <div class="year">01 March  2021</div>
+                <div class="address">
+                  <a href="https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;2YmcaN1-cYQ" target= "_blank"><i class="fas fa-globe ico"></i> https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;2YmcaN1-cYQ</a>
+                </div>
+                <p>Conducted a 4SH workshop in March 2021 on LitElement, a lightweight library for building WebComponents.
+</p>
+              </div>
+            </div>
+            <div class="publication panel panel-default">
+              <div class="panel-heading">
+                <div class="name panel-title">Fullstack Typescript</div>
+              </div>
+              <div class="panel-body">
+                <div class="publisher"><i class= "fas fa-bookmark ico"></i> BordeauxJS</div>
+                <div class="year">09 November  2023</div>
+                <div class="address">
+                  <a href="https:&#x2F;&#x2F;slides.com&#x2F;fredericcamblor&#x2F;fullstack-typescript-d3e717" target= "_blank"><i class="fas fa-globe ico"></i> https:&#x2F;&#x2F;slides.com&#x2F;fredericcamblor&#x2F;fullstack-typescript-d3e717</a>
+                </div>
+                <p>Presented at Bordeaux JS on November 9th about building a fullstack TypeScript application, covering architecture, tooling, and best practices.
+</p>
+              </div>
+            </div>
+          </div>
+          <!-- LANGUAGES -->
+          <div class="box">
+            <h2><i class="fas fa-language ico"></i> Languages</h2>
+            <ul class="list-group">
+              <li class=" list-group-item">French<span class="skill badge pull-right">Native or bilingual proficiency</span></li>
+              <li class=" list-group-item">English<span class="skill badge pull-right">Professional working proficiency</span></li>
+            </ul>
+          </div>
+          <!-- HOBBIES -->
+          <div class="box">
+            <h2><i class="fas fa-heart ico"></i> Interests</h2>
+            <div class="interests clearfix">
+              <div class="item-interests">
+                  Kiteboarding
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+              </div>
+            </div>
+            <div class="interests clearfix">
+              <div class="item-interests">
+                  Wingfoiling
+              </div>
+              <div class="col-sm-offset-1 col-sm-12 clearfix">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
