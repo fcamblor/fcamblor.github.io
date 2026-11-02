@@ -20,6 +20,7 @@ const NativeWebSocket = window.WebSocket;
 
 class IrohWebSocket extends EventTarget {
   static CONNECTING = 0; static OPEN = 1; static CLOSING = 2; static CLOSED = 3;
+  #sock = null;
   constructor(path) {
     super();
     this.url = path; this.readyState = 0; this.binaryType = 'blob'; this.protocol = ''; this.extensions = '';
@@ -47,6 +48,11 @@ class IrohWebSocket extends EventTarget {
       this.#closed(1006, String(e));
     }
   }
+  #emit(ev) {
+    this.dispatchEvent(ev);
+    this[`on${ev.type}`]?.(ev);
+  }
+  #closed(code, reason) {
     if (this.readyState === 3) return;
     this.readyState = 3;
     this.#emit(new CloseEvent('close', { code, reason, wasClean: code === 1000 }));
