@@ -142,6 +142,16 @@ h4 { font-size: var(--t-md); font-weight: 650; margin: 0; }
 .ws-header > * { -webkit-app-region: no-drag; }
 .ws-title { display: flex; align-items: baseline; gap: var(--sp-sm); min-width: 0; }
 .ws-title h2 { font-size: var(--t-lg); }
+.ws-title .branch { display: inline-flex; align-items: center; gap: var(--sp-xs); min-width: 0; }
+.ref-chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 4px 1px 6px; border: 1px solid var(--line); border-radius: 6px; min-width: 0; white-space: nowrap; }
+.ref-chip .ref-label { font-family: var(--sans, inherit); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.ref-chip .target-branch { text-decoration: none; }
+.ref-chip .target-branch:hover { text-decoration: underline; }
+.ref-upstream { font-size: var(--t-xs); color: var(--muted); }
+.ref-arrow { color: var(--muted); }
+.ref-chip .git-copy { opacity: 0; transition: opacity .12s; }
+.ref-chip:hover .git-copy, .ref-chip .git-copy:focus-visible { opacity: 1; }
+@media (hover: none) { .ref-chip .git-copy { opacity: .6; } }
 .branch { color: var(--muted); }
 button.target-branch { color: inherit; text-decoration-style: dotted; text-underline-offset: 3px; }
 button.target-branch:hover, button.target-branch[aria-expanded="true"] { color: var(--fg); text-decoration-style: solid; }
@@ -243,6 +253,12 @@ button.primary.loading:disabled { background: var(--accent); border-color: var(-
 .chat { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 .messages { flex: 1; overflow: auto; padding: var(--sp-lg) var(--sp-xl); display: flex; flex-direction: column; gap: var(--sp-md); }
 .messages { font-size: var(--t-read); }
+/* Outside the scrolled discussion: it takes height from it rather than covering a pending request. */
+.prompt-recall { flex: none; display: flex; align-items: flex-start; gap: var(--sp-sm); padding: 6px var(--sp-xl); background: var(--bg3); border-bottom: 1px solid var(--line); font-size: var(--t-sm); line-height: 1.45; }
+.prompt-recall-text { flex: 1; min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.prompt-recall:not(.open) .prompt-recall-text { max-height: none !important; }
+.prompt-recall.open .prompt-recall-text { display: block; overflow: auto; }
+.prompt-recall-actions { flex: none; display: flex; gap: var(--sp-xs); }
 .msg.prompt { align-self: flex-end; max-width: 85%; background: var(--bg3); border-radius: 10px; padding: var(--sp-sm) var(--sp-md); }
 .msg-copy { display: block; margin: 3px 0 0 auto; opacity: .65; }
 .msg-copy:hover { opacity: 1; }
@@ -256,16 +272,30 @@ button.primary.loading:disabled { background: var(--accent); border-color: var(-
 .md pre { background: var(--bg2); border: 1px solid var(--line); padding: var(--sp-sm); border-radius: var(--radius); overflow: auto; }
 .md code { background: var(--bg2); padding: 1px 4px; border-radius: 4px; }
 .md pre code { background: none; padding: 0; }
+.code-block { position: relative; }
+.code-actions { position: absolute; top: 4px; right: 4px; display: flex; gap: 2px; opacity: .65; }
+.code-block:hover .code-actions, .code-actions:focus-within { opacity: 1; }
+.code-copy::before { content: "⧉"; }
+.code-run::before { content: "▶"; }
+.no-code-run .code-run { display: none; }
 .md table { border-collapse: collapse; } .md td, .md th { border: 1px solid var(--line); padding: 3px 8px; }
 .fold { background: transparent; border: none; padding: 2px 0; color: var(--muted); justify-content: flex-start; width: 100%; min-width: 0; }
 .fold:hover { color: var(--fg); background: transparent !important; }
 .step-last { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: var(--mono); font-size: var(--t-xs); }
 .steps, .msg.thinking { padding-left: var(--sp-sm); }
+/* Tool activity stays one quiet line each, so that the agent's words stand out between them. */
+.msg.steps > .fold { font-size: var(--t-sm); white-space: nowrap; }
+.request.settled { border: none; background: none; padding: 0 0 0 var(--sp-sm); font-size: var(--t-sm); }
+.request.settled > .permission-summary { flex-wrap: nowrap; }
+.request.settled > .permission-summary > span:last-child { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.request.settled > .permission-summary[aria-expanded="true"] > span:last-child { white-space: normal; }
+.msg.steps + .request.settled, .request.settled + .request.settled, .request.settled + .msg.steps { margin-top: calc(2px - var(--sp-md)); }
 .step-list { display: flex; flex-direction: column; gap: 2px; padding-left: var(--sp-md); }
 .step code { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .step.error code { color: var(--danger); }
 .io { background: var(--bg2); border: 1px solid var(--line); border-radius: var(--radius); padding: 6px var(--sp-sm); max-height: 320px; overflow: auto; white-space: pre-wrap; margin: 2px 0; }
 .io.out { color: var(--muted); }
+.io code { font: inherit; background: none; padding: 0; white-space: inherit; overflow: visible; }
 .msg.error pre { color: var(--danger); white-space: pre-wrap; margin: 0; background: var(--danger-soft); padding: var(--sp-sm); border-radius: var(--radius); }
 .msg.info { color: var(--muted); font-style: italic; }
 .msg.turn { border-top: 1px dashed var(--line); padding-top: 6px; margin-bottom: var(--sp-md); }
@@ -274,7 +304,11 @@ button.primary.loading:disabled { background: var(--accent); border-color: var(-
 .file-chip.clickable { cursor: pointer; } .file-chip.clickable:hover { border-color: var(--accent); }
 .turn-meta { display: flex; gap: 6px; align-items: center; margin-top: var(--sp-xs); }
 .turn-diff { width: 100%; border: 1px solid var(--line); border-radius: var(--radius); overflow: auto; max-height: 420px; margin: var(--sp-xs) 0; }
+.turn-diff-popover { position: fixed; z-index: 900; display: flex; flex-direction: column; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); box-shadow: 0 12px 32px #0006; overflow: hidden; opacity: 0; animation: popover-in 100ms ease-out 250ms forwards; }
+.turn-diff-popover-path { font-family: var(--mono); font-size: var(--t-xs); color: var(--muted); padding: 4px 8px; border-bottom: 1px solid var(--line); background: var(--bg2); }
+.turn-diff-popover .turn-diff { border: 0; border-radius: 0; margin: 0; max-height: none; flex: 1; min-height: 0; }
 .working { color: var(--muted); display: flex; gap: var(--sp-sm); align-items: center; }
+.working-time { font-family: var(--mono); font-size: var(--t-xs); font-variant-numeric: tabular-nums; }
 .msg.subagent { border: 1px solid var(--line); border-radius: 8px; padding: 2px var(--sp-sm); background: var(--bg2); }
 .msg.subagent.running { border-color: var(--accent); }
 .msg.subagent.error { border-color: var(--danger); }
@@ -303,7 +337,7 @@ button.primary.loading:disabled { background: var(--accent); border-color: var(-
 
 /* Composer */
 .composer { position: relative; border-top: 1px solid var(--line); padding: var(--sp-sm) var(--sp-md) var(--sp-md); background: var(--bg2); }
-.composer textarea { min-height: 64px; background: var(--bg); }
+.composer textarea { min-height: 64px; max-height: 40vh; resize: none; overflow: auto; background: var(--bg); }
 .composer-bar { display: flex; gap: var(--sp-xs); align-items: center; margin-top: 6px; flex-wrap: wrap; }
 .refs { position: relative; }
 .ctx-gauge { position: relative; display: flex; }
@@ -736,9 +770,15 @@ table.tokens tr.revoked { opacity: .5; }
   .shared-banner { padding: var(--sp-xs) var(--sp-sm); }
   .shared-banner .spacer { flex-basis: 100%; height: 0; }
   .shared-banner > .ghost { padding-inline: 0; margin-right: var(--sp-sm); }
-  .ws-actions, .resizer, .dock-right, .dock-bottom, .git-stat { display: none; }
+  /* No dock to show the terminal in, hence no running a code block. */
+  .resizer, .dock-right, .dock-bottom, .git-stat, .code-run { display: none; }
+  /* Only archiving survives in the cramped header: the other actions are desktop affordances. */
+  .ws-actions { flex: none; }
+  .ws-actions > :not(.archive-btn) { display: none; }
+  .archive-btn { min-height: 36px; white-space: nowrap; }
   .ws-main { grid-template-columns: 1fr !important; }
   .messages { padding: var(--sp-md) var(--sp-sm); }
+  .prompt-recall { padding-inline: var(--sp-sm); }
   .msg.prompt { max-width: 92%; }
   .composer-bar { gap: 2px; }
   .picker-pop, .slash-menu, .wf-menu, .share-pop, .tasks-panel { position: fixed; left: 8px !important; right: 8px; width: auto; bottom: 8px; top: auto; max-height: 70vh; overflow: auto; }
@@ -1194,3 +1234,6 @@ button.danger-fill { background: var(--danger); border-color: var(--danger); col
 .commit-row.rewritten .commit-sha { font-style: italic; color: var(--accent); text-decoration: underline dashed; text-underline-offset: 3px; }
 .commit-row.rewritten { background: color-mix(in oklch, var(--accent-soft) 55%, transparent); }
 .history-list.previewing .commit-row:not(.rewritten) { opacity: 0.7; }
+
+.fork-origin { margin: 4px 0 10px; padding: 6px 10px; border: 1px dashed var(--line); border-radius: var(--radius); font-size: 12px; }
+.fork-links { margin-top: 4px; font-size: 12px; }
