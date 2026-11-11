@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Tornade</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#16161a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Tornade" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <style id="shell-style">
+    body { margin: 0; background: #16161a; color: #e6e6ea; font: 14px/1.45 -apple-system, system-ui, sans-serif; }
+    #shell { padding: max(16px, env(safe-area-inset-top)) 16px 16px; max-width: 640px; margin: auto; }
+    #shell h1 { font-size: 18px; margin: 0 0 12px; }
+    #shell input, #shell button { font: inherit; padding: 8px 10px; border-radius: 6px; border: 1px solid #3a3a44; background: #222229; color: inherit; }
+    #shell button { background: #6fa7ee; color: #16161a; border: 0; font-weight: 600; }
+    #shell .row { display: flex; gap: 8px; margin: 8px 0; flex-wrap: wrap; }
+    #shell input { flex: 1; min-width: 0; }
+    #log { white-space: pre-wrap; font: 12px/1.4 ui-monospace, monospace; background: #0f0f12; padding: 10px; border-radius: 6px; margin-top: 12px; }
+  </style>
+  <script type="module" src="tornade-pwa.js"></script>
+  <script type="module" src="shell.js"></script>
+</head>
+<body>
+  <div id="shell">
+    <h1>Tornade shell (spike ADR 0003)</h1>
+    <div class="row"><input id="owner" placeholder="EndpointId (64 hex) ou ?owner=…&amp;pair=…" /></div>
+    <div class="row"><input id="direct" placeholder="Mode direct (desktop) : http://127.0.0.1:port" /></div>
+    <div class="row">
+      <label>Parallélisme <input id="par" type="number" value="4" min="1" max="16" style="width:4em;flex:0" /></label>
+      <button id="go">Télécharger et démarrer</button>
+      <button id="dl">Télécharger seulement</button>
+      <button id="wipe">Vider le cache</button>
+      <button id="copy">Copier le log</button>
+    </div>
+    <div id="log"></div>
+  </div>
+</body>
+</html>
