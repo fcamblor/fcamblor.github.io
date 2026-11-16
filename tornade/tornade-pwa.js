@@ -86,7 +86,31 @@ const b64u = (s) => {
   return Uint8Array.from(b, (c) => c.charCodeAt(0));
 };
 
+// Chromium fires `beforeinstallprompt` once, possibly before the wasm app mounts: keep it
+// for the in-app install banner, which listens to `tornade-installable` for late arrivals.
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  window.dispatchEvent(new Event('tornade-installable'));
+});
+window.addEventListener('appinstalled', () => {
+  installPrompt = null;
+  window.dispatchEvent(new Event('tornade-installable'));
+});
+
 window.tornadePwa = {
+  canInstall() { return installPrompt !== null; },
+  /** Shows the native install dialog; resolves to true when the user accepted. */
+  async install() {
+    const p = installPrompt;
+    if (!p) return false;
+    installPrompt = null;
+    await p.prompt();
+    const { outcome } = await p.userChoice;
+    window.dispatchEvent(new Event('tornade-installable'));
+    return outcome === 'accepted';
+  },
   /** Connects the PWA to the `owner` instance; subsequent /api/… calls are routed to it. */
   async connect(owner) {
     await loadWasm();

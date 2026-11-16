@@ -32,13 +32,15 @@ window.adeReview = (() => {
 
   function clear() { window.getSelection()?.removeAllRanges(); }
 
-  function mark(els, quote, id) {
+  // `prefix`: rendered text just before the passage, to pick its occurrence; `kind`: "note" marks a
+  // note to self (mark.nmark, data-note) instead of a review thread (mark.cmark, data-thread).
+  function mark(els, quote, id, prefix, kind) {
     const q = norm(quote);
     if (!q) return false;
     const nodes = [];
     for (const el of els) {
       const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
-        acceptNode: (n) => n.parentElement.closest(".cl-num, .cl-mark, mark") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+        acceptNode: (n) => n.parentElement.closest(kind === "note" ? ".cl-num, .cl-mark" : ".cl-num, .cl-mark, mark") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
       });
       for (let n; (n = w.nextNode());) nodes.push(n);
       nodes.push(null);
@@ -51,8 +53,13 @@ window.adeReview = (() => {
         else { flat += t[i]; map.push([n, i]); space = false; }
       }
     }
-    const at = flat.indexOf(q);
+    let at = flat.indexOf(q);
     if (at < 0) return false;
+    const p = norm(prefix || "").replace(/ /g, "").slice(-24);
+    if (p) {
+      const fits = (i) => flat.slice(Math.max(0, i - 80), i).replace(/ /g, "").endsWith(p);
+      for (let i = at; i >= 0; i = flat.indexOf(q, i + 1)) if (fits(i)) { at = i; break; }
+    }
     const [sn, so] = map[at], [en, eo] = map[at + q.length - 1];
     let on = false;
     for (const n of nodes) {
@@ -65,7 +72,8 @@ window.adeReview = (() => {
         if (s > 0) mid = n.splitText(s);
         if (e - s < mid.data.length) mid.splitText(e - s);
         const m = document.createElement("mark");
-        m.className = "cmark"; m.dataset.thread = id;
+        if (kind === "note") { m.className = "nmark"; m.dataset.note = id; }
+        else { m.className = "cmark"; m.dataset.thread = id; }
         mid.parentNode.insertBefore(m, mid); m.appendChild(mid);
       }
       if (n === en) break;
@@ -73,8 +81,8 @@ window.adeReview = (() => {
     return true;
   }
 
-  function unmark(root) {
-    root.querySelectorAll("mark.cmark").forEach((m) => { m.replaceWith(...m.childNodes); });
+  function unmark(root, kind) {
+    root.querySelectorAll(kind === "note" ? "mark.nmark" : "mark.cmark").forEach((m) => { m.replaceWith(...m.childNodes); });
     root.normalize();
   }
 

@@ -10,7 +10,16 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Tornade" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon.ico" sizes="32x32" />
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -19,18 +28,19 @@
   
   
   <link rel="stylesheet" href="./xterm-ae5fff20b9b7d4c7.css" integrity="sha384-8Xk9wy/gzEDUKrXtrmCFa2bBuK3BpjpDuL/p0SeKQX19Khl/M+lHOgD/CyYf7efP"/>
-  <link rel="stylesheet" href="./style-fc2e07eed35211e3.css" integrity="sha384-7UTEYVsgBLZrX2pcPL8Llav4u+7oBJyKTm6UOUFZTGzMdx2PWKxMf7S1ehCOpKkP"/>
+  <link rel="stylesheet" href="./style-658a1b5f21a6cf06.css" integrity="sha384-asRXw7ELzOr1vKh7u4fcakBMJCN6MA80RVsrDXsNhvJIIWgQsOompe+VrZFEKg/8"/>
   
   <script>window.__TORNADE_PWA__ = true;</script>
 <script type="module" src="tornade-pwa.js"></script>
   <script src="./xterm-eb2aabf777f80b8a.js" integrity="sha384-M169f14mRZOXm3hD/v2Ti0ThIT/RnAQagXA9nlE15yHAtrW19gdePJh/HaTzUOe/"></script>
   <script src="./addon-fit-c9bfe7faa6957349.js" integrity="sha384-iF+jqbuti4XlB64clWgFWYEscb+UnSRv3VgVikGYZu+otNFnSHr7y7NcKfBnGizn"></script>
   <script src="./term-8d4adaac0b91b34b.js" integrity="sha384-ArDqXrKwglUsIwHDdJXcLeK2aCwKkHpYfAUzuSroY5xx4iPhi9vUBzqEty/hd5/Z"></script>
-  <script src="./review-1abffc7573a50a1f.js" integrity="sha384-41AsvfwLNmqGq81d1HxuudEuFZV3XYw70CEfZFZhz7Mvj58twWluNc4I98GqrSr6"></script>
+  <script src="./review-363fd9ca9913000d.js" integrity="sha384-p9NpwSInhjhl4usLSfsZY36Cs4/LF8FgjB/uACenNT0oUieX3O+nPptupePObCYW"></script>
+  <script src="./find-49d56acff3b891dc.js" integrity="sha384-+WmOKZMDLYx3McWioStUY0jjBeFQXoR9/APXi6jkPCG60OtC8OQrJnh3Yd9mkbmc"></script>
   
 <script type="module">
-import init, * as bindings from './tornade-frontend-425e49fc4b60afd.js';
-const wasm = await init({ module_or_path: './tornade-frontend-425e49fc4b60afd_bg.wasm' });
+import init, * as bindings from './tornade-frontend-beb2fed163181f0c.js';
+const wasm = await init({ module_or_path: './tornade-frontend-beb2fed163181f0c_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -39,6 +49,20 @@ window.wasmBindings = bindings;
 dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
 </script>
-<link rel="modulepreload" href="./tornade-frontend-425e49fc4b60afd.js" crossorigin="anonymous" integrity="sha384-+FVlIXDSMkjTuBj8p8zt/J+WSaXP7ZllIThGJGyNDRJLLCpj4yf1Q3K2OmxitDRx"><link rel="preload" href="./tornade-frontend-425e49fc4b60afd_bg.wasm" crossorigin="anonymous" integrity="sha384-j+GyzuamCmODSCrpzBSGMK+CbC3g54Nn8HVzT59rSsiFa+Q1ZO9wFctFqRvnrUL7" as="fetch" type="application/wasm"></head>
-<body></body>
+  <style>
+    /* Boot loader: painted before the wasm bundle loads, removed by main() right before mounting. */
+    #boot-loader { position: fixed; inset: 0; display: grid; place-items: center; background: light-dark(oklch(0.985 0.004 255), oklch(0.185 0.008 255)); color: light-dark(oklch(0.52 0.13 255), oklch(0.72 0.12 255)); color-scheme: light dark; opacity: 0; animation: boot-in 300ms ease-out 250ms forwards; }
+    #boot-loader tornado-spin { display: block; width: 96px; aspect-ratio: 420 / 364; background: currentColor; mask: url("tornado-lg.webp") center / contain no-repeat; -webkit-mask: url("tornado-lg.webp") center / contain no-repeat; }
+    @keyframes boot-in { to { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) {
+      #boot-loader { animation: none; opacity: 1; }
+      #boot-loader tornado-spin { mask-image: url("tornado-lg-still.svg"); -webkit-mask-image: url("tornado-lg-still.svg"); }
+    }
+  </style>
+<link rel="modulepreload" href="./tornade-frontend-beb2fed163181f0c.js" crossorigin="anonymous" integrity="sha384-tffreT12Vwf8SzOKSjYQcNR1oWQhUgX58y6wl8rtpmV7Nqpj1EvvFvC04hCl6xuX"><link rel="preload" href="./tornade-frontend-beb2fed163181f0c_bg.wasm" crossorigin="anonymous" integrity="sha384-Zv5UJtOamPzoK6gpZvPAmwZj2w4njKQL/oVXpS2vp2/ZVnfUAALBPrUTTyeASF60" as="fetch" type="application/wasm"></head>
+<body>
+  <div id="boot-loader" role="progressbar" aria-busy="true" aria-label="Tornade">
+    <tornado-spin></tornado-spin>
+  </div>
+</body>
 </html>
