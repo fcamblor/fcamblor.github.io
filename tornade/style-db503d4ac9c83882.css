@@ -148,22 +148,23 @@ tornado-spin.spinner-tornado { display: inline-block; width: 16px; aspect-ratio:
 
 /* ---------- Workspace: header, center, docks ---------- */
 .workspace { display: flex; flex-direction: column; height: 100%; min-height: 0; }
-/* One line: the title and the refs share what the actions leave, each capped so none can crowd out the others. */
-.ws-header { container: ws-header / inline-size; display: flex; align-items: center; gap: var(--sp-lg); padding: 10px var(--sp-md) 8px; border-bottom: 1px solid var(--line); -webkit-app-region: drag; }
+/* One row for the whole chrome: worktree and refs, discussion tabs, then actions and panel toggles.
+   The tabs take what the title and actions leave, so typing room is not spent on a second bar. */
+.ws-header { container: ws-header / inline-size; display: flex; align-items: center; gap: 10px; height: 40px; flex: none; padding: 0 var(--sp-sm) 0 var(--sp-md); border-bottom: 1px solid var(--line); -webkit-app-region: drag; }
 .ws-header > * { -webkit-app-region: no-drag; }
-.ws-title { display: flex; align-items: center; gap: var(--sp-md); flex: 0 1 auto; min-width: 0; }
-.ws-title h2 { flex: 0 1 auto; min-width: 8ch; max-width: 36ch; font-size: var(--t-lg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ws-title .branch { display: flex; align-items: center; gap: var(--sp-xs); flex: 0 1 auto; min-width: 42ch; }
-.ws-title .branch:has(.ref-upstream) { min-width: 50ch; }
-.ws-title .ref-chip { flex: 0 1 auto; min-width: 18ch; max-width: 52ch; }
-.ws-title .ref-chip:has(.ref-upstream) { min-width: 26ch; max-width: 64ch; }
-.ws-title .ref-chip .git-copy { padding: 0 3px; }
-/* Below what the capped line needs next to the actions, the refs go under the title rather than collide.
-   On the header's own width: an open sidebar narrows it whatever the viewport. */
+.ws-title { display: flex; align-items: center; gap: 6px; flex: 0 1 auto; min-width: 0; max-width: 46%; }
+.ws-title h2 { flex: 0 1 auto; min-width: 4ch; max-width: 24ch; font-size: var(--t-md); font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The refs shrink to one quiet pill: branch → target, each still opening its picker. */
+.ws-title .branch { display: flex; align-items: center; gap: 2px; flex: 0 1 auto; min-width: 0; padding: 1px 4px; border: 1px solid var(--line); border-radius: 6px; font-size: 11px; }
+.ws-title .ref-chip { flex: 0 1 auto; min-width: 0; max-width: 28ch; padding: 0 2px; border: 0; }
+.ws-title .ref-chip .ref-label, .ws-title .ref-upstream { display: none; }
+/* The copy buttons would leave gaps in so small a pill: they show on hover only. */
+.ws-title .ref-chip .git-copy { display: none; padding: 0 3px; }
+.ws-title .ref-chip:hover .git-copy, .ws-title .ref-chip .git-copy:focus-visible { display: inline; }
+.ws-header > .center-tabs { flex: 1; align-self: stretch; border-bottom: 0; padding-left: 10px; box-shadow: inset 1px 0 0 var(--line); min-width: 0; }
+/* Narrow header: the refs leave first, the worktree name and the tabs stay. */
 @container ws-header (max-width: 880px) {
-  .ws-title { flex-direction: column; align-items: stretch; gap: 0; flex: 1; }
-  .ws-title h2 { max-width: none; }
-  .ws-title .branch, .ws-title .branch:has(.ref-upstream), .ws-title .ref-chip, .ws-title .ref-chip:has(.ref-upstream) { min-width: 0; }
+  .ws-title .branch { display: none; }
 }
 .ws-title .ref-chip > * { flex: none; }
 /* The ellipsis sits on the button: its anchor must not clip, it positions the branch picker. */
@@ -206,7 +207,12 @@ button.target-branch:hover, button.target-branch[aria-expanded="true"] { color: 
 .target-paths li { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .target-status { margin: 0; padding: 5px 6px; }
 .target-picker-foot { display: flex; justify-content: space-between; gap: var(--sp-sm); align-items: baseline; padding: 2px 4px 0; border-top: 1px solid var(--line); padding-top: 6px; }
-.ws-actions { display: flex; gap: var(--sp-xs); margin-left: auto; align-items: center; }
+.ws-actions { display: flex; gap: 2px; margin-left: auto; align-items: center; flex: none; }
+.ws-more-btn { padding: 4px 6px; color: var(--muted); }
+.ws-more-btn[aria-expanded="true"] { color: var(--fg); background: var(--bg3); }
+.ws-more-menu { gap: 2px; min-width: 220px; }
+.ws-more-menu .open-in { width: 100%; }
+.ws-more-menu > .refs > button, .ws-more-menu > .archive-btn { width: 100%; justify-content: flex-start; }
 .gitbar { display: flex; align-items: center; gap: var(--sp-sm); }
 /* Each relationship reads as one control: the ref it targets is fused to its action button. */
 .history-gitbar .gitbar { gap: var(--sp-xs) var(--sp-md); flex-wrap: wrap; }
@@ -314,7 +320,8 @@ button.primary.loading:disabled { background: var(--accent); border-color: var(-
 /* Outside the scrolled discussion: it takes height from it rather than covering a pending request. */
 /* Takes no height: the button floats over the end of the discussion, above the composer. */
 .to-end-anchor { position: relative; flex: none; height: 0; }
-.to-end { position: absolute; bottom: var(--sp-md); left: 50%; transform: translateX(-50%); z-index: 5; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--bg2); color: var(--fg); box-shadow: 0 4px 12px oklch(0 0 0 / 0.25); cursor: pointer; }
+/* Centred, straddling the top edge of the composer: the notes toolbar sits clear above it. */
+.to-end { position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); z-index: 5; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--bg2); color: var(--fg); box-shadow: 0 4px 12px oklch(0 0 0 / 0.25); cursor: pointer; }
 .to-end:hover { background: var(--bg-hover); }
 .prompt-recall { flex: none; display: flex; align-items: flex-start; gap: var(--sp-sm); padding: 6px var(--sp-xl); background: var(--bg3); border-bottom: 1px solid var(--line); font-size: var(--t-sm); line-height: 1.45; }
 .prompt-recall-text { flex: 1; min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
@@ -408,6 +415,39 @@ button.primary.loading:disabled { background: var(--accent); border-color: var(-
 .file-chip { font-family: var(--mono); font-size: var(--t-xs); background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; }
 .file-chip.clickable { cursor: pointer; } .file-chip.clickable:hover { border-color: var(--accent); }
 .turn-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: var(--sp-xs); }
+/* Notes toolbar stuck to the bottom of the discussion: notes come up wherever one is reading.
+   Its panel unfolds above it; the rest of the strip lets clicks through to the messages. */
+/* Low, just clear of the composer: the centred ↓ only reaches 20px above it, and the bar stays right. */
+.notes-dock { container: notes-dock / inline-size; position: sticky; bottom: 6px; margin-bottom: calc(6px - var(--sp-lg)); z-index: 4; margin-top: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; pointer-events: none; }
+.notes-dock > * { pointer-events: auto; }
+/* Groups, not buttons, are separated: add · notes (to deal with, resolved) · read state.
+   Buttons are borderless pills sharing one height; an unfolded one stays filled. */
+.turn-notes { display: inline-flex; align-items: center; flex-wrap: nowrap; max-width: 100%; padding: 3px; border-radius: 999px; background: var(--note-soft); border: 1px solid var(--note-line); box-shadow: 0 4px 14px oklch(0 0 0 / .10); font-size: var(--t-sm); }
+.tn-group { display: inline-flex; align-items: center; gap: 2px; }
+.tn-group + .tn-group { margin-left: 5px; padding-left: 5px; box-shadow: inset 1px 0 0 var(--note-line); }
+.turn-notes button { height: 26px; padding: 0 10px; gap: 6px; white-space: nowrap; border: 0; border-radius: 999px; background: transparent; color: var(--note-fg); font-size: var(--t-sm); font-weight: 600; }
+.turn-notes button:hover:not(:disabled) { background: var(--accent-soft); border: 0; }
+.turn-notes button[aria-expanded="true"] { background: var(--accent-soft); }
+.turn-notes .turn-resolved-toggle { color: var(--muted); font-weight: 500; }
+.turn-notes .turn-resolved-toggle:hover:not(:disabled), .turn-notes .turn-resolved-toggle[aria-expanded="true"] { color: var(--fg); background: color-mix(in oklch, var(--accent-soft) 60%, transparent); }
+/* The panel opens upward: closed points up, open points down. */
+.turn-notes svg.disclosure { color: currentColor; opacity: .7; transform: rotate(-90deg); }
+.turn-notes svg.disclosure.open { transform: rotate(90deg); }
+/* Short of room, the toolbar keeps one line: the add and unread labels give way to their icons. */
+@container notes-dock (max-width: 640px) {
+  .turn-notes .tn-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .turn-notes button { padding: 0 8px; }
+  .turn-unread { padding: 0 2px 0 6px; }
+}
+.turn-unread { display: inline-flex; align-items: center; gap: 6px; padding: 0 4px 0 8px; color: var(--note-fg); font-size: var(--t-sm); font-weight: 600; white-space: nowrap; }
+.turn-unread .dot, .to-end-unread { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.to-end-unread { position: absolute; top: -1px; right: -1px; width: 9px; height: 9px; box-shadow: 0 0 0 2px var(--bg2); }
+.turn-notes-panel { width: min(760px, 100%); max-height: 45vh; display: flex; flex-direction: column; overflow: hidden; border-radius: 10px; background: var(--note-soft); border: 1px solid var(--note-line); box-shadow: 0 10px 28px oklch(0 0 0 / .16); animation: pop-in 160ms var(--ease); }
+.turn-notes-panel .notes-list { border-top: 0; padding: 4px; max-height: none; min-height: 0; flex: 0 1 auto; overflow: auto; }
+.turn-notes-panel .notes-list:empty { display: none; }
+.turn-notes-panel * + .notes-list.resolved { border-top: 1px solid var(--note-line); }
+.turn-notes-foot { display: flex; align-items: center; justify-content: flex-end; gap: var(--sp-sm); padding: 4px 6px; flex: none; }
+.notes-list:not(:empty) + .turn-notes-foot { border-top: 1px solid var(--note-line); }
 .turn-diff { width: 100%; border: 1px solid var(--line); border-radius: var(--radius); overflow: auto; max-height: 420px; margin: var(--sp-xs) 0; }
 .turn-diff-popover { position: fixed; z-index: 900; display: flex; flex-direction: column; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); box-shadow: 0 12px 32px #0006; overflow: hidden; opacity: 0; animation: popover-in 100ms ease-out 250ms forwards; }
 .turn-diff-popover-path { font-family: var(--mono); font-size: var(--t-xs); color: var(--muted); padding: 4px 8px; border-bottom: 1px solid var(--line); background: var(--bg2); }
@@ -546,7 +586,19 @@ button.primary.loading:disabled { background: var(--accent); border-color: var(-
 .loadout-col .model-list button { justify-content: flex-start; gap: var(--sp-sm); text-align: left; }
 .loadout-col .model-list button > span:not(.agent-ico):not(.account-state) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .loadout-foot { display: flex; justify-content: flex-end; border-top: 1px solid var(--line); padding-top: var(--sp-sm); margin-top: calc(-1 * var(--sp-xs)); }
-@media (max-width: 640px) { .loadout-grid, .loadout-grid.with-style { grid-template-columns: 1fr; } .loadout-col .model-list { max-height: 9rem; } }
+.picker-pop.loadout-pop.with-tools { width: min(52rem, calc(100vw - 24px)); }
+.loadout-grid.with-tools { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(6.5rem, auto) minmax(8rem, 0.9fr); }
+.loadout-grid.with-style.with-tools { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(6.5rem, auto) minmax(7.5rem, 0.9fr) minmax(8rem, 0.9fr); }
+.loadout-tools { border-left: 1px solid var(--line); padding-left: var(--sp-sm); }
+.loadout-tools .tool-switch { gap: var(--sp-sm); }
+.tool-knob { flex: none; position: relative; width: 24px; height: 14px; border-radius: 7px; background: var(--line-strong); transition: background .15s ease-out; }
+.tool-knob::after { content: ""; position: absolute; top: 2px; left: 2px; width: 10px; height: 10px; border-radius: 50%; background: var(--bg); transition: transform .15s ease-out; }
+.tool-switch.on .tool-knob { background: var(--accent); }
+.tool-switch.on .tool-knob::after { transform: translateX(10px); }
+.tool-origin { font-size: var(--t-xs); color: var(--muted); padding: 0 8px; display: flex; flex-wrap: wrap; gap: 0 6px; }
+.trigger-tool { display: inline-flex; color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .tool-knob, .tool-knob::after { transition: none; } }
+@media (max-width: 640px) { .loadout-grid, .loadout-grid.with-style, .loadout-grid.with-tools { grid-template-columns: 1fr; } .loadout-tools { border-left: 0; padding-left: 0; } .loadout-col .model-list { max-height: 9rem; } }
 
 /* Permission mode, apart from the model. */
 .perm-trigger .perm-ico { flex: none; color: var(--muted); }
@@ -769,6 +821,14 @@ table.diff tr.hunk td { color: var(--accent); background: var(--hunk-bg); paddin
 .tree-row.file { font-family: var(--mono); font-size: var(--t-xs); padding-left: 20px; }
 .tree-row.selected { background: var(--accent-soft); }
 .tree-row.ignored { opacity: 0.6; }
+.tree-root { display: flex; align-items: center; gap: var(--sp-sm); min-height: 26px; padding: 2px 2px 2px 6px; margin-top: var(--sp-sm); border-bottom: 1px solid var(--line); font-size: var(--t-sm); }
+.tree-root-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.tree-root-branch { font-size: var(--t-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
+.tree-root-actions { display: flex; gap: 2px; flex-shrink: 0; }
+.tree-root-actions button.icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 22px; padding: 0; border-radius: 4px; }
+.tree-root-actions button.icon:hover:not(:disabled) { background: var(--bg-hover); }
+.tree-root-actions button.icon:disabled { opacity: .35; cursor: default; }
+.reveal-flash { animation: line-flash 1.6s var(--ease); }
 .caret { color: var(--muted); width: 1ch; display: inline-block; }
 .editor { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 .editor-head { display: flex; align-items: center; gap: var(--sp-sm); padding: 6px var(--sp-md); border-bottom: 1px solid var(--line); }
@@ -985,7 +1045,9 @@ table.tokens tr.revoked { opacity: .5; }
   .sidebar { position: fixed; inset: 0 25% 0 0; z-index: 55; transform: translateX(-105%); transition: transform 200ms var(--ease); box-shadow: 0 0 40px oklch(0 0 0 / 0.4); }
   .app.nav-open .sidebar { transform: none; }
   .sidebar-chrome { height: 52px; padding-left: 52px; }
-  .ws-header { padding: 8px 8px 8px 52px; gap: var(--sp-sm); }
+  .ws-header { height: auto; flex-wrap: wrap; row-gap: 0; padding: 8px 8px 0 52px; gap: var(--sp-sm); }
+  .ws-header > .center-tabs { order: 3; flex-basis: 100%; padding-left: 0; box-shadow: none; }
+  .ws-title { max-width: none; flex: 1; }
   /* Chips stack one per line rather than overlapping: each keeps its own ellipsis. */
   .ws-title .branch { flex-wrap: wrap; row-gap: 2px; min-width: 0; font-size: var(--t-xs); }
   .ws-title .ref-arrow { display: none; }
@@ -996,9 +1058,8 @@ table.tokens tr.revoked { opacity: .5; }
   .shared-banner > .ghost { padding-inline: 0; margin-right: var(--sp-sm); }
   /* No dock to show the terminal in, hence no running a code block. */
   .resizer, .dock-right, .dock-bottom, .git-stat, .code-run { display: none; }
-  /* Only archiving survives in the cramped header: the other actions are desktop affordances. */
-  .ws-actions { flex: none; }
-  .ws-actions > :not(.archive-btn) { display: none; }
+  /* Only the actions menu survives in the cramped header: the panel toggles are desktop affordances. */
+  .ws-actions > :not(.ws-more) { display: none; }
   .archive-btn { min-height: 36px; white-space: nowrap; }
   .ws-main { grid-template-columns: 1fr !important; }
   .messages { padding: var(--sp-md) var(--sp-sm); }
@@ -1054,10 +1115,10 @@ table.tokens tr.revoked { opacity: .5; }
 .panel-toggles { display: inline-flex; gap: 0; margin-left: var(--sp-xs); padding-left: var(--sp-xs); border-left: 1px solid var(--line); }
 .panel-toggle { padding: 4px 6px; color: var(--muted); }
 .panel-toggle[aria-pressed="true"] { color: var(--fg); }
-.panel-reopen { position: fixed; top: 10px; left: 10px; z-index: 40; padding: 4px 6px; color: var(--muted); }
+.panel-reopen { position: fixed; top: 7px; left: 10px; z-index: 40; padding: 4px 6px; color: var(--muted); }
 .panel-hide { margin-left: auto; padding: 4px 6px; color: var(--muted); }
 @media (max-width: 760px) { .panel-hide { display: none; } }
-.app.left-collapsed .ws-header { padding-left: 48px; }
+.app.left-collapsed .ws-header { padding-left: 44px; }
 .session-bar { display: flex; align-items: center; min-width: 0; flex: 1; }
 .session-bar .session-tabs { flex: 1; min-width: 0; }
 .tabs-actions { display: flex; align-items: center; gap: 2px; padding-right: var(--sp-sm); flex: none; }
@@ -1109,8 +1170,11 @@ table.tokens tr.revoked { opacity: .5; }
 .account-state .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warn); }
 .account-state.ok .dot { background: var(--ok); }
 .account-list { list-style: none; margin: 0 0 var(--sp-md); padding: 0; display: flex; flex-direction: column; gap: var(--sp-xs); max-width: 46rem; }
-.account-row { display: flex; align-items: center; gap: var(--sp-sm); padding: var(--sp-sm); border: 1px solid var(--line); border-radius: 8px; }
+.account-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-sm); padding: var(--sp-sm); border: 1px solid var(--line); border-radius: 8px; }
 .account-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.account-tools { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 2px var(--sp-md); margin-top: 2px; padding: var(--sp-sm) 0 0 16px; border-top: 1px solid var(--line); }
+.account-tools-head { font-size: var(--t-xs); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.account-tools .tool-switch { background: transparent; border-color: transparent; gap: var(--sp-sm); padding: 2px 6px; }
 .account-main .mono { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .account-label { font-weight: 650; background: transparent; border-color: transparent; padding: 2px 6px; margin-left: -6px; }
 .account-label:hover { border-color: var(--line); }
@@ -1832,19 +1896,14 @@ button.note-anchor:hover:not(:disabled) { background: none; color: var(--note-fg
 .notes-head { display: flex; align-items: center; gap: var(--sp-sm); padding: 4px 4px 4px 6px; min-height: 34px; }
 .notes-head > * { flex: none; }
 .notes-head > .spacer { flex: 1; }
-/* With the unread answer in the row, adding a note keeps only its icon. */
-.notes-unread ~ .notes-add .label { display: none; }
 .notes-toggle { background: none; border: none; padding: 2px 6px; color: var(--note-fg); font-weight: 600; font-size: var(--t-sm); }
 .notes-toggle:hover:not(:disabled) { background: var(--accent-soft); border: none; }
-.notes-unread { display: inline-flex; align-items: center; gap: 6px; color: var(--note-fg); font-size: var(--t-sm); font-weight: 600; padding-left: 4px; }
-.notes-unread + .notes-toggle { box-shadow: inset 1px 0 0 var(--note-line); border-radius: 0; padding-left: 12px; }
-.notes-read { color: var(--note-fg); font-weight: 500; }
 .notes-bar.errored { background: var(--danger-soft); border-color: color-mix(in oklch, var(--danger) 35%, transparent); }
 .notes-error { display: inline-flex; align-items: center; gap: 2px; padding-left: 4px; }
 .notes-error .err-dot { margin-right: 4px; }
 .notes-error-show { color: var(--danger); font-weight: 600; text-decoration: underline; text-decoration-color: color-mix(in oklch, currentColor 35%, transparent); text-underline-offset: 3px; }
 .notes-error-dismiss { color: var(--danger); font-weight: 500; }
-.notes-error + .notes-unread, .notes-error + .notes-toggle { box-shadow: inset 1px 0 0 color-mix(in oklch, var(--danger) 30%, transparent); border-radius: 0; padding-left: 12px; }
+.notes-error + .notes-toggle { box-shadow: inset 1px 0 0 color-mix(in oklch, var(--danger) 30%, transparent); border-radius: 0; padding-left: 12px; }
 .notes-add { color: var(--note-fg); }
 .notes-address { background: var(--note); border-color: var(--note); color: var(--accent-fg); font-weight: 600; }
 .notes-address:hover:not(:disabled) { background: var(--note); border-color: var(--note); filter: brightness(1.08); }
