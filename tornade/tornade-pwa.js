@@ -1,4 +1,4 @@
-import init, { connect as irohConnect, device_id } from './pkg/tornade_iroh_web.js';
+import init, { connect as irohConnect } from './pkg/tornade_iroh_web.js';
 
 const isApi = (u) => u.origin === location.origin && u.pathname.startsWith('/api/');
 let ready = null;
@@ -91,39 +91,27 @@ window.WebSocket = function (url, protocols) {
 };
 Object.assign(window.WebSocket, { CONNECTING: 0, OPEN: 1, CLOSING: 2, CLOSED: 3, prototype: NativeWebSocket.prototype });
 
-const b64u = (s) => {
-  const b = atob((s + '='.repeat((4 - (s.length % 4)) % 4)).replace(/-/g, '+').replace(/_/g, '/'));
-  return Uint8Array.from(b, (c) => c.charCodeAt(0));
-};
-
-// Chromium fires `beforeinstallprompt` once, possibly before the wasm app mounts: keep it
-// for the in-app install banner, which listens to `tornade-installable` for late arrivals.
-let installPrompt = null;
+// The website's frozen contract with the app (ADR 0003, "Launcher contract"). Keep it this small:
+// anything else belongs in the app, which is downloaded from the primary and evolves freely.
+//   - fetch / WebSocket to `/api/…` go to the connected primary (above);
+//   - `tornadePwa.connect(owner)`, `fetchPrimary(path)`, `homeRelay()`;
+//   - `window.tornadeInstallPrompt`: Chromium's `beforeinstallprompt` event, which fires once and
+//     possibly before the app mounts, so it is kept here; `tornade-installable` signals changes.
+window.tornadeInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
-  installPrompt = e;
+  window.tornadeInstallPrompt = e;
   window.dispatchEvent(new Event('tornade-installable'));
 });
 window.addEventListener('appinstalled', () => {
-  installPrompt = null;
+  window.tornadeInstallPrompt = null;
   window.dispatchEvent(new Event('tornade-installable'));
 });
 
 window.tornadePwa = {
-  canInstall() { return installPrompt !== null; },
-  /** Shows the native install dialog; resolves to true when the user accepted. */
-  async install() {
-    const p = installPrompt;
-    if (!p) return false;
-    installPrompt = null;
-    await p.prompt();
-    const { outcome } = await p.userChoice;
-    window.dispatchEvent(new Event('tornade-installable'));
-    return outcome === 'accepted';
-  },
-  /** Connects the PWA to the `owner` instance; subsequent /api/… calls are routed to it. */
+  /** Connects to the `owner` instance; subsequent /api/… calls are routed to it. */
   async connect(owner) {
-    // The app started by the launcher reuses the launcher's connection (ADR 0003).
+    // The app started by the launcher reuses the launcher's connection.
     if (ready && connectedOwner === owner) return ready;
     await loadWasm();
     connectedOwner = owner;
@@ -138,23 +126,6 @@ window.tornadePwa = {
   },
   /** The relay this device goes through (browsers only reach the primary through a relay). */
   homeRelay() { return currentLink?.home_relay?.() ?? null; },
-  async deviceId() { await loadWasm(); return device_id(); },
-  standalone() { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; },
-  pushSupported() { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; },
-  /** Web Push subscription (iOS requires a user gesture): JSON to send to the instance. */
-  async subscribePush(vapidPublicKey) {
-    const perm = await Notification.requestPermission();
-    if (perm !== 'granted') throw new Error('notifications denied');
-    const reg = await navigator.serviceWorker.ready;
-    let sub = await reg.pushManager.getSubscription();
-    if (sub && sub.options?.applicationServerKey) {
-      const cur = new Uint8Array(sub.options.applicationServerKey);
-      const want = b64u(vapidPublicKey);
-      if (cur.length !== want.length || cur.some((b, i) => b !== want[i])) { await sub.unsubscribe(); sub = null; }
-    }
-    sub ??= await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(vapidPublicKey) });
-    return JSON.stringify(sub.toJSON());
-  },
 };
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js', { scope: './' }).catch((e) => console.warn('sw', e));
