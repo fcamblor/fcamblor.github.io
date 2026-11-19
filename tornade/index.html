@@ -54,11 +54,8 @@
        hand-over to the app does not move it. Everything else hangs below it. */
     #launcher { position: fixed; inset: 0; display: grid; place-items: center; padding: 0 24px; }
     .mark { position: relative; display: block; width: 96px; aspect-ratio: 420 / 364; color: var(--accent); }
-    /* The still mark (2 KB) swaying from its top, rather than the app's 540 KB animated WebP: the
-       website stays as light as possible (ADR 0003). */
-    .mark tornado-spin { position: absolute; inset: 0; background: currentColor; mask: url("tornado-lg-still.svg") center / contain no-repeat; -webkit-mask: url("tornado-lg-still.svg") center / contain no-repeat; transform-origin: 60% 0; animation: sway 1.6s ease-in-out infinite alternate; }
-    @keyframes sway { from { rotate: -5deg; translate: -3px 0; } to { rotate: 5deg; translate: 3px 0; } }
-    #launcher[data-state="welcome"] .mark tornado-spin, #launcher[data-state="error"] .mark tornado-spin { animation: none; }
+    .mark tornado-spin { position: absolute; inset: 0; background: currentColor; mask: url("tornado-lg.webp") center / contain no-repeat; -webkit-mask: url("tornado-lg.webp") center / contain no-repeat; }
+    #launcher[data-state="welcome"] .mark tornado-spin, #launcher[data-state="error"] .mark tornado-spin { mask-image: url("tornado-lg-still.svg"); -webkit-mask-image: url("tornado-lg-still.svg"); }
     #launcher[data-state="error"] .mark { color: var(--muted); }
     .below { position: absolute; top: calc(100% + 28px); left: 50%; translate: -50% 0; width: min(320px, calc(100vw - 48px)); text-align: center; color: var(--fg); }
 
@@ -99,7 +96,7 @@
     #debug-log { position: fixed; inset: auto 12px calc(52px + env(safe-area-inset-bottom)); max-height: 45vh; overflow: auto; margin: 0; padding: 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); color: var(--fg); font: 11px/1.45 var(--mono); white-space: pre-wrap; }
 
     @media (prefers-reduced-motion: reduce) {
-      .mark tornado-spin { animation: none; }
+      .mark tornado-spin { mask-image: url("tornado-lg-still.svg"); -webkit-mask-image: url("tornado-lg-still.svg"); }
       .bar > i, .progress { transition: none; }
     }
   </style>
