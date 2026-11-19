@@ -463,6 +463,13 @@ button.primary.loading:disabled { background: var(--accent); border-color: var(-
 .msg.error pre { color: var(--danger); white-space: pre-wrap; margin: 0; background: var(--danger-soft); padding: var(--sp-sm); border-radius: var(--radius); }
 .msg.error.resumable { display: flex; align-items: center; gap: var(--sp-sm); background: var(--danger-soft); border-radius: var(--radius); padding-right: var(--sp-sm); }
 .msg.error.resumable pre { flex: 1; }
+.msg.error.resumable:has(.signin-ok) { flex-wrap: wrap; }
+.msg.error.resumable.signed-in { background: var(--ok-soft); transition: background-color 400ms cubic-bezier(0.16, 1, 0.3, 1); }
+.msg.error.resumable.signed-in pre { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in oklch, var(--muted) 50%, transparent); }
+.signin-ok { flex-basis: 100%; display: flex; align-items: flex-start; gap: var(--sp-sm); margin: 0; padding: 0 0 var(--sp-sm) var(--sp-sm); color: var(--ok); font-size: var(--t-sm); line-height: 1.45; }
+.signin-ok svg { flex: none; margin-top: 1px; }
+.signin-ok span { color: var(--fg); }
+.signin-ok strong { color: var(--ok); font-weight: 600; }
 .resumed-mark { flex: none; display: inline-flex; align-items: center; gap: 4px; font-size: var(--t-xs); color: var(--muted); white-space: nowrap; }
 .resumed-mark::before { content: "↻"; }
 /* Contextual notice from the agent runtime (usage limits, compaction…): not the LLM speaking, so it wears the warn hue. */
@@ -1042,6 +1049,62 @@ table.diff tr.hunk td { color: var(--accent); background: var(--hunk-bg); paddin
 .settings-section label { display: flex; flex-direction: column; gap: var(--sp-xs); color: var(--muted); }
 .settings-section label.check { flex-direction: row; align-items: center; }
 .settings-section label > * { color: var(--fg); }
+/* Backups */
+.backup-dir { display: flex; align-items: baseline; gap: var(--sp-sm); min-width: 0; }
+.backup-dir code { font-family: var(--mono); overflow-wrap: anywhere; min-width: 0; user-select: all; }
+.backup-folder { display: flex; flex-direction: column; gap: var(--sp-sm); }
+.backup-folder p { margin: 0; max-width: 75ch; }
+.backup-dir { flex-wrap: wrap; align-items: center; }
+.backup-dir-edit { display: flex; gap: var(--sp-sm); align-items: center; flex-wrap: wrap; animation: backup-confirm-in 180ms var(--ease); }
+.backup-dir-edit input { flex: 1 1 22rem; min-width: 0; }
+.backup-plan { display: flex; flex-wrap: wrap; gap: var(--sp-lg); align-items: flex-end; transition: opacity 160ms var(--ease); }
+.backup-plan.off { opacity: .55; }
+.backup-plan select, .backup-plan input { box-sizing: border-box; height: 2.2em; }
+.backup-plan select { min-width: 13rem; }
+.backup-weekday { min-width: 9rem; }
+.backup-rule { align-items: center; gap: var(--sp-sm); }
+.backup-rule select, .backup-rule select.backup-weekday { min-width: 0; width: auto; }
+.backup-rule > span { color: var(--fg); }
+.backup-rule > span.muted { color: var(--muted); }
+.backup-n { width: 4.5rem; text-align: center; font-variant-numeric: tabular-nums; }
+.backup-upcoming { display: flex; flex-wrap: wrap; gap: var(--sp-xs) var(--sp-lg); list-style: none; margin: 0; padding: 0; color: var(--muted); font-variant-numeric: tabular-nums; }
+.backup-upcoming li.next { color: var(--fg); font-weight: 550; }
+.backup-upcoming li + li::before { content: "→"; margin-right: var(--sp-lg); color: var(--line-strong); }
+.backup-time { width: 7.5rem; font-variant-numeric: tabular-nums; color-scheme: light dark; }
+.backup-keep { width: 6rem; font-variant-numeric: tabular-nums; }
+.backup-now { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-md); padding: var(--sp-md) 0; border-block: 1px solid var(--line); margin-top: var(--sp-sm); }
+.backup-list-title { display: flex; align-items: baseline; gap: var(--sp-sm); flex-wrap: wrap; }
+.backup-list-title .small { font-weight: 400; }
+.backup-list { font-variant-numeric: tabular-nums; }
+.backup-list td { padding-block: 7px; vertical-align: middle; }
+.backup-list .num { text-align: right; white-space: nowrap; }
+.backup-date { white-space: nowrap; font-weight: 550; }
+.backup-row:hover td { background: var(--bg2); }
+.backup-row.confirming td { background: var(--bg2); border-bottom-color: transparent; }
+.backup-kind { display: inline-flex; align-items: center; gap: 6px; font-size: var(--t-sm); white-space: nowrap; }
+.backup-kind::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex: none; }
+.backup-kind.auto::before { background: var(--accent); }
+.backup-kind.manual::before { background: var(--ok); }
+.backup-kind.pre-restore::before { background: var(--warn); }
+.backup-actions { text-align: right; white-space: nowrap; }
+.backup-actions button + button { margin-left: var(--sp-xs); }
+.backup-confirm td { background: var(--bg2); padding: 0 6px var(--sp-md); }
+.backup-confirm-body { display: flex; gap: var(--sp-lg); align-items: flex-start; padding: var(--sp-md) var(--sp-lg); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg); animation: backup-confirm-in 180ms var(--ease); }
+.backup-confirm.restore .backup-confirm-body { border-color: color-mix(in oklch, var(--danger) 45%, var(--line)); }
+.backup-confirm-body p { margin: var(--sp-xs) 0 0; max-width: 70ch; }
+.backup-confirm-actions { display: flex; gap: var(--sp-sm); flex: none; }
+button.primary.danger-fill { background: var(--danger); border-color: var(--danger); color: var(--accent-fg); }
+.backup-empty { padding: var(--sp-lg) 0; }
+@keyframes backup-confirm-in { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .backup-confirm-body { animation: none; } }
+@media (max-width: 720px) {
+  .backup-list thead { display: none; }
+  .backup-list tr.backup-row { display: grid; grid-template-columns: 1fr auto; }
+  .backup-list tr.backup-row td { border-bottom: none; }
+  .backup-list tr.backup-row td.backup-actions { grid-column: 1 / -1; text-align: left; border-bottom: 1px solid var(--line); }
+  .backup-list .num { text-align: left; }
+  .backup-confirm-body { flex-direction: column; }
+}
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-md); }
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-md); }
 .verdict { padding: var(--sp-sm) 10px; border-radius: var(--radius); border: 1px solid var(--line); }
@@ -1708,6 +1771,7 @@ button.danger-solid kbd { background: transparent; border: 0; color: inherit; op
 .gitbar.confirming > :not(.git-confirm) { display: none; }
 .git-confirm { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; row-gap: 4px; align-items: center; gap: var(--sp-sm); padding: 2px 2px 2px var(--sp-sm); border: 1px solid color-mix(in oklch, var(--danger) 45%, transparent); border-radius: var(--radius); background: var(--danger-soft); }
 .git-confirm-msg { flex: 1 1 16em; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--t-sm); }
+.git-confirm-msg.wrap { white-space: normal; overflow: visible; }
 .git-confirm-msg b { color: var(--danger); }
 .git-confirm-msg code { font-family: var(--mono); font-size: var(--t-xs); }
 .git-confirm-actions { display: flex; gap: var(--sp-sm); margin-left: auto; }
@@ -1737,7 +1801,7 @@ button.danger-fill { background: var(--danger); border-color: var(--danger); col
 .history-list.previewing .commit-row:not(.rewritten, .orphaned) { opacity: 0.7; }
 /* Rebase preview: the replayed commits' old position, its branch names struck as they leave. */
 .left-refs .ref { text-decoration: line-through; color: var(--danger); border-color: currentColor; border-style: dashed; background: transparent; }
-.rebase-preview-note.danger { border-color: var(--danger); color: var(--danger); background: var(--danger-soft); }
+.rebase-preview-note.danger { border-color: var(--danger); color: var(--danger); background: var(--danger-soft); white-space: normal; line-height: 1.25; }
 .commit-row.orphaned { background: color-mix(in oklch, var(--danger-soft) 55%, transparent); padding-right: calc(2 * var(--sp-sm) + 1em); }
 .commit-row.orphaned .commit-sha, .commit-row.orphaned .commit-subject { text-decoration: line-through; color: var(--danger); }
 .history-list.force-previewing .commit-row:not(.orphaned) { opacity: 0.7; }
@@ -1809,6 +1873,7 @@ button.icon { display: inline-flex; align-items: center; justify-content: center
 .cascade-what .small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono); }
 .cascade-status { display: inline-flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 6px 8px; font-size: var(--t-sm); white-space: nowrap; }
 .cascade-status button { display: inline-flex; align-items: center; gap: 5px; }
+.cascade-status .cascade-one { order: 1; }
 .cascade-row[data-state="running"] .cascade-node { border-color: var(--live); background: var(--live-soft); animation: cascade-pulse 1.2s ease-in-out infinite; }
 .cascade-row[data-state="done"] .cascade-node { border-color: var(--ok); background: var(--ok); }
 .cascade-row[data-state="done"] .cascade-status { color: var(--ok); }
