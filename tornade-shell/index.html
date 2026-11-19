@@ -28,14 +28,14 @@
 <body>
   <div id="shell">
     <h1>Tornade shell (spike ADR 0003)</h1>
-    <div class="row"><input id="owner" placeholder="EndpointId (64 hex) ou ?owner=…&amp;pair=…" /></div>
-    <div class="row"><input id="direct" placeholder="Mode direct (desktop) : http://127.0.0.1:port" /></div>
+    <div class="row"><input id="owner" placeholder="EndpointId (64 hex) or ?owner=…&amp;pair=…" /></div>
+    <div class="row"><input id="direct" placeholder="Direct mode (desktop): http://127.0.0.1:port" /></div>
     <div class="row">
-      <label>Parallélisme <input id="par" type="number" value="4" min="1" max="16" style="width:4em;flex:0" /></label>
-      <button id="go">Télécharger et démarrer</button>
-      <button id="dl">Télécharger seulement</button>
-      <button id="wipe">Vider le cache</button>
-      <button id="copy">Copier le log</button>
+      <label>Parallelism <input id="par" type="number" value="4" min="1" max="16" style="width:4em;flex:0" /></label>
+      <button id="go">Download and start</button>
+      <button id="dl">Download only</button>
+      <button id="wipe">Clear cache</button>
+      <button id="copy">Copy log</button>
     </div>
     <div id="log"></div>
   </div>

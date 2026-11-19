@@ -52,25 +52,25 @@ function acceptLink(text) {
 async function transport() {
   const direct = $('direct').value.trim().replace(/\/$/, '');
   if (direct) {
-    log(`mode direct → ${direct}`);
+    log(`direct mode → ${direct}`);
     return { mode: 'direct', origin: direct, get: (p) => fetch(direct + p, { cache: 'no-store' }) };
   }
   const owner = acceptLink($('owner').value.trim()) ?? localStorage.getItem(CURRENT);
-  if (!owner) throw new Error('aucune instance : colle le lien d’appairage ou un EndpointId');
-  log(`connexion iroh à ${owner.slice(0, 12)}…`);
+  if (!owner) throw new Error('no instance: paste the pairing link or an EndpointId');
+  log(`iroh connection to ${owner.slice(0, 12)}…`);
   const tc = performance.now();
   await window.tornadePwa.connect(owner);
-  log(`connecté en ${(performance.now() - tc).toFixed(0)} ms`);
+  log(`connected in ${(performance.now() - tc).toFixed(0)} ms`);
   const inst = instances().find((x) => x.id === owner);
   if (inst?.pairing) {
-    log('appairage…');
+    log('pairing…');
     const r = await fetch('/api/devices/pair', {
       method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ secret: inst.pairing, user_agent: navigator.userAgent }),
     });
-    if (!r.ok) throw new Error(`appairage refusé : ${r.status} ${await r.text()}`);
+    if (!r.ok) throw new Error(`pairing refused: ${r.status} ${await r.text()}`);
     upsert({ id: owner, pairing: null });
-    log('appairé');
+    log('paired');
   }
   return { mode: 'iroh', owner, get: (p) => window.tornadePwa.fetchPrimary(p) };
 }
@@ -80,12 +80,12 @@ async function download(tp) {
   const par = Math.max(1, Number($('par').value) || 4);
   const tm = performance.now();
   const res = await tp.get('/api/pwa/bundle');
-  if (!res.ok) throw new Error(`/api/pwa/bundle : ${res.status} (primary trop ancien ?)`);
+  if (!res.ok) throw new Error(`/api/pwa/bundle: ${res.status} (primary too old?)`);
   const bundle = await res.json();
   const total = bundle.files.reduce((n, f) => n + f.size, 0);
-  log(`manifest en ${(performance.now() - tm).toFixed(0)} ms : build ${bundle.build_id}, ${bundle.files.length} fichiers, ${kb(total)}`);
+  log(`manifest in ${(performance.now() - tm).toFixed(0)} ms : build ${bundle.build_id}, ${bundle.files.length} files, ${kb(total)}`);
   const big = bundle.files.find((f) => f.path.endsWith('.wasm') && f.size > 30 * 1024 * 1024);
-  if (big) log(`⚠ ${big.path} fait ${kb(big.size)} : bundle debug ?`);
+  if (big) log(`⚠ ${big.path} is ${kb(big.size)}: debug bundle?`);
 
   const key = `${tp.mode === 'iroh' ? tp.owner.slice(0, 16) : 'direct'}`;
   const prefix = new URL(`app/${key}/${bundle.build_id}/`, location.href).href;
@@ -113,7 +113,7 @@ async function download(tp) {
     todo.push(f);
   }
   const bytes = todo.reduce((n, f) => n + f.size, 0);
-  log(`${todo.length} fichiers à télécharger (${kb(bytes)}), ${reused} repris d’un build précédent`);
+  log(`${todo.length} files to download (${kb(bytes)}), ${reused} reused from a previous build`);
 
   const td = performance.now();
   let done = 0;
@@ -121,20 +121,20 @@ async function download(tp) {
   const one = async (f) => {
     const t = performance.now();
     const r = await tp.get('/' + f.path.split('/').map(encodeURIComponent).join('/'));
-    if (!r.ok) throw new Error(`${f.path} : ${r.status}`);
+    if (!r.ok) throw new Error(`${f.path}: ${r.status}`);
     const buf = await r.arrayBuffer();
     const sha = hex(await crypto.subtle.digest('SHA-256', buf));
-    if (sha !== f.sha256) throw new Error(`${f.path} : empreinte invalide`);
+    if (sha !== f.sha256) throw new Error(`${f.path}: hash mismatch`);
     await cache.put(prefix + f.path, new Response(buf, { headers: { 'content-type': mimeOf(f.path), 'x-sha256': sha } }));
     done++; got += buf.byteLength;
     if (f.size > 100 * 1024 || done === todo.length) {
-      log(`  ${f.path} ${kb(f.size)} en ${(performance.now() - t).toFixed(0)} ms (${done}/${todo.length})`);
+      log(`  ${f.path} ${kb(f.size)} in ${(performance.now() - t).toFixed(0)} ms (${done}/${todo.length})`);
     }
   };
   const queue = [...todo].sort((a, b) => b.size - a.size);
   await Promise.all(Array.from({ length: par }, async () => { while (queue.length) await one(queue.shift()); }));
   const s = (performance.now() - td) / 1000;
-  if (todo.length) log(`téléchargé ${kb(got)} en ${s.toFixed(2)} s (${(got / 1024 / s).toFixed(0)} KiB/s, //${par})`);
+  if (todo.length) log(`downloaded ${kb(got)} in ${s.toFixed(2)} s (${(got / 1024 / s).toFixed(0)} KiB/s, //${par})`);
 
   // Switch only once the set is complete, then drop the old builds.
   localStorage.setItem(`tornade.app.${key}`, bundle.build_id);
@@ -205,13 +205,13 @@ async function boot({ prefix, cache, bundle }, tp) {
     }
   }
   for (const el of [...doc.body.childNodes]) document.body.append(document.importNode(el, true));
-  log(`boot injecté en ${(performance.now() - tb).toFixed(0)} ms`);
+  log(`boot injected in ${(performance.now() - tb).toFixed(0)} ms`);
   window.__tornadeShell = { lines, bundle, prefix };
 }
 
 async function run(withBoot) {
   try {
-    if (!('caches' in window) || !crypto.subtle) throw new Error('Cache Storage / WebCrypto indisponible (contexte non sécurisé ?)');
+    if (!('caches' in window) || !crypto.subtle) throw new Error('Cache Storage / WebCrypto unavailable (insecure context?)');
     const tp = await transport();
     const app = await download(tp);
     if (withBoot) await boot(app, tp);
@@ -223,19 +223,19 @@ async function run(withBoot) {
 // --- UI wiring ---
 if ('serviceWorker' in navigator) {
   // tornade-pwa.js registers sw.js too; the registration is idempotent.
-  navigator.serviceWorker.register('./sw.js', { scope: './' }).catch((e) => log(`sw : ${e}`));
+  navigator.serviceWorker.register('./sw.js', { scope: './' }).catch((e) => log(`sw: ${e}`));
 }
 $('owner').value = location.search.includes('owner=') ? location.search : (localStorage.getItem(CURRENT) ?? '');
 $('direct').value = params.get('direct') ?? '';
 if (params.get('par')) $('par').value = params.get('par');
 $('go').onclick = () => run(true);
 $('dl').onclick = () => run(false);
-$('copy').onclick = () => navigator.clipboard.writeText(lines.join('\n') + '\n\n' + localStorage.getItem('tornade.spike.results')).then(() => log('log copié'));
+$('copy').onclick = () => navigator.clipboard.writeText(lines.join('\n') + '\n\n' + localStorage.getItem('tornade.spike.results')).then(() => log('log copied'));
 $('wipe').onclick = async () => {
   for (const n of await caches.keys()) if (n.startsWith('tornade-app-')) await caches.delete(n);
-  log('cache vidé');
+  log('cache cleared');
 };
-log(`shell prêt (${navigator.userAgent.split(') ')[0]})`);
-log(`DecompressionStream gzip : ${typeof DecompressionStream === 'function' ? 'oui' : 'non'}`);
-navigator.storage?.persisted?.().then((p) => log(`stockage persistant : ${p ? 'oui' : 'non'}`));
+log(`shell ready (${navigator.userAgent.split(') ')[0]})`);
+log(`DecompressionStream gzip: ${typeof DecompressionStream === 'function' ? 'yes' : 'no'}`);
+navigator.storage?.persisted?.().then((p) => log(`persistent storage: ${p ? 'yes' : 'no'}`));
 if (params.get('auto') === '1') run(true);
