@@ -79,9 +79,10 @@ async function transport() {
       method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ secret: inst.pairing, user_agent: navigator.userAgent }),
     });
-    if (!r.ok) throw new Error(`pairing refused: ${r.status} ${await r.text()}`);
+    // A QR code scanned twice: the code is single-use, but this device may already be paired with it.
     upsert({ id: owner, pairing: null });
-    log('paired');
+    if (r.ok) log('paired');
+    else log(`pairing refused (${r.status} ${await r.text()}), continuing in case this device is already paired`);
   }
   window.tornadeDevlog?.setSender((entries) => postLog('/api/pwa/spike-log', entries));
   return { mode: 'iroh', owner, get: (p) => window.tornadePwa.fetchPrimary(p) };
