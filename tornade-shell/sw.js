@@ -4,11 +4,19 @@ self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 
 const APP = new URL("./app/", self.location).href;
+// SPIKE: forwards service worker events to the pages' device log (devlog.js).
+const devlog = (msg) =>
+  self.clients.matchAll({ includeUncontrolled: true }).then((cs) => cs.forEach((c) => c.postMessage({ type: "devlog", msg })));
+self.addEventListener("activate", () => devlog("service worker activated"));
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET" || !e.request.url.startsWith(APP)) return;
   const url = e.request.url.split(/[?#]/)[0];
   e.respondWith(
-    caches.match(url).then((r) => r ?? new Response(`not in cache: ${url}`, { status: 404 }))
+    caches.match(url).then((r) => {
+      if (r) return r;
+      devlog(`not in cache: ${url}`);
+      return new Response(`not in cache: ${url}`, { status: 404 });
+    })
   );
 });
 

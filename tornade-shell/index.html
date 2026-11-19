@@ -22,6 +22,7 @@
     #shell input { flex: 1; min-width: 0; }
     #log { white-space: pre-wrap; font: 12px/1.4 ui-monospace, monospace; background: #0f0f12; padding: 10px; border-radius: 6px; margin-top: 12px; }
   </style>
+  <script src="devlog.js"></script>
   <script type="module" src="tornade-pwa.js"></script>
   <script type="module" src="shell.js"></script>
 </head>
@@ -31,11 +32,11 @@
     <div class="row"><input id="owner" placeholder="EndpointId (64 hex) or ?owner=…&amp;pair=…" /></div>
     <div class="row"><input id="direct" placeholder="Direct mode (desktop): http://127.0.0.1:port" /></div>
     <div class="row">
-      <label>Parallelism <input id="par" type="number" value="4" min="1" max="16" style="width:4em;flex:0" /></label>
       <button id="go">Download and start</button>
       <button id="dl">Download only</button>
       <button id="wipe">Clear cache</button>
       <button id="copy">Copy log</button>
+      <button id="send">Send log now</button>
     </div>
     <div id="log"></div>
   </div>

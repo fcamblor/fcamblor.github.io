@@ -5,7 +5,8 @@
 //  - iroh (real use): connects to the instance through tornadePwa, pairs if `?pair=` is pending.
 //  - direct (desktop only, `?direct=http://127.0.0.1:port`): plain HTTP to a local primary, to test
 //    the download + in-place boot without iroh.
-// Options: `?par=N` parallel downloads, `?auto=1` boots on load if a build is cached.
+// On load, a pairing link in the URL (`?owner=…&pair=…`, from the primary's QR code) is stored and
+// the shell connects right away; a known instance is also started right away (home screen launch).
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -48,11 +49,20 @@ function acceptLink(text) {
   return owner;
 }
 
+async function postLog(url, entries) {
+  const r = await fetch(url, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ session: window.tornadeDevlog.session, entries }),
+  });
+  if (!r.ok) throw new Error(`spike-log: ${r.status}`);
+}
+
 // --- transport: `get(path)` returns a Response from the primary ---
 async function transport() {
   const direct = $('direct').value.trim().replace(/\/$/, '');
   if (direct) {
     log(`direct mode → ${direct}`);
+    window.tornadeDevlog?.setSender((entries) => postLog(direct + '/api/pwa/spike-log', entries));
     return { mode: 'direct', origin: direct, get: (p) => fetch(direct + p, { cache: 'no-store' }) };
   }
   const owner = acceptLink($('owner').value.trim()) ?? localStorage.getItem(CURRENT);
@@ -72,12 +82,13 @@ async function transport() {
     upsert({ id: owner, pairing: null });
     log('paired');
   }
+  window.tornadeDevlog?.setSender((entries) => postLog('/api/pwa/spike-log', entries));
   return { mode: 'iroh', owner, get: (p) => window.tornadePwa.fetchPrimary(p) };
 }
 
 // --- download: manifest → missing files → SHA-256 check → Cache Storage ---
 async function download(tp) {
-  const par = Math.max(1, Number($('par').value) || 4);
+  const par = 4;
   const tm = performance.now();
   const res = await tp.get('/api/pwa/bundle');
   if (!res.ok) throw new Error(`/api/pwa/bundle: ${res.status} (primary too old?)`);
@@ -134,12 +145,12 @@ async function download(tp) {
   const queue = [...todo].sort((a, b) => b.size - a.size);
   await Promise.all(Array.from({ length: par }, async () => { while (queue.length) await one(queue.shift()); }));
   const s = (performance.now() - td) / 1000;
-  if (todo.length) log(`downloaded ${kb(got)} in ${s.toFixed(2)} s (${(got / 1024 / s).toFixed(0)} KiB/s, //${par})`);
+  if (todo.length) log(`downloaded ${kb(got)} in ${s.toFixed(2)} s (${(got / 1024 / s).toFixed(0)} KiB/s)`);
 
   // Switch only once the set is complete, then drop the old builds.
   localStorage.setItem(`tornade.app.${key}`, bundle.build_id);
   for (const name of previous) await caches.delete(name);
-  saveResult({ mode: tp.mode, build: bundle.build_id, files: bundle.files.length, total, downloaded: got, seconds: s, par });
+  saveResult({ mode: tp.mode, build: bundle.build_id, files: bundle.files.length, total, downloaded: got, seconds: s });
   return { prefix, cache, bundle };
 }
 
@@ -225,12 +236,19 @@ if ('serviceWorker' in navigator) {
   // tornade-pwa.js registers sw.js too; the registration is idempotent.
   navigator.serviceWorker.register('./sw.js', { scope: './' }).catch((e) => log(`sw: ${e}`));
 }
-$('owner').value = location.search.includes('owner=') ? location.search : (localStorage.getItem(CURRENT) ?? '');
+// Pairing link from the QR code: store it, then drop the secret from the address bar and history.
+const linked = params.has('owner') ? acceptLink(location.search) : null;
+if (linked) {
+  log(`pairing link received for ${linked.slice(0, 12)}…`);
+  const keep = params.get('direct') ? `?direct=${encodeURIComponent(params.get('direct'))}` : '';
+  history.replaceState(null, '', location.pathname + keep + location.hash);
+}
+$('owner').value = localStorage.getItem(CURRENT) ?? '';
 $('direct').value = params.get('direct') ?? '';
-if (params.get('par')) $('par').value = params.get('par');
 $('go').onclick = () => run(true);
 $('dl').onclick = () => run(false);
-$('copy').onclick = () => navigator.clipboard.writeText(lines.join('\n') + '\n\n' + localStorage.getItem('tornade.spike.results')).then(() => log('log copied'));
+$('copy').onclick = () => navigator.clipboard.writeText((window.tornadeDevlog?.text() ?? lines.join('\n')) + '\n\n' + localStorage.getItem('tornade.spike.results')).then(() => log('log copied'));
+$('send').onclick = () => (window.tornadeDevlog?.flush() ?? Promise.resolve()).then(() => log(`log sent (session ${window.tornadeDevlog?.session})`));
 $('wipe').onclick = async () => {
   for (const n of await caches.keys()) if (n.startsWith('tornade-app-')) await caches.delete(n);
   log('cache cleared');
@@ -238,4 +256,5 @@ $('wipe').onclick = async () => {
 log(`shell ready (${navigator.userAgent.split(') ')[0]})`);
 log(`DecompressionStream gzip: ${typeof DecompressionStream === 'function' ? 'yes' : 'no'}`);
 navigator.storage?.persisted?.().then((p) => log(`persistent storage: ${p ? 'yes' : 'no'}`));
-if (params.get('auto') === '1') run(true);
+if (linked || params.get('direct') || localStorage.getItem(CURRENT)) run(true);
+else log('no instance yet: scan the QR code shown by Tornade on your computer, or paste its pairing link');
