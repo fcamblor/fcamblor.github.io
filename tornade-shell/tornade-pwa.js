@@ -15,7 +15,13 @@ window.fetch = async (input, opts) => {
   const req = new Request(input, opts);
   const link = await ready;
   const body = ['GET', 'HEAD'].includes(req.method) ? undefined : new Uint8Array(await req.arrayBuffer());
-  const r = await link.fetch(req.method, url.pathname + url.search, [...req.headers], body);
+  let r;
+  try {
+    r = await link.fetch(req.method, url.pathname + url.search, [...req.headers], body);
+  } catch (e) {
+    // Like a native fetch: callers (gloo-net) expect an Error, the wasm side may throw a string.
+    throw e instanceof Error ? e : new TypeError(`iroh fetch failed: ${e}`);
+  }
   return new Response([101, 204, 205, 304].includes(r.status) ? null : r.body, { status: r.status, headers: r.headers });
 };
 

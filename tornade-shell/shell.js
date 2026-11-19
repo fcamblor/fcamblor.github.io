@@ -220,14 +220,24 @@ async function boot({ prefix, cache, bundle }, tp) {
   window.__tornadeShell = { lines, bundle, prefix };
 }
 
+// One run at a time: the automatic start and a button press would otherwise download the same files
+// twice in parallel and boot the app twice.
+let running = false;
+let booted = false;
 async function run(withBoot) {
+  if (running || booted) { log(running ? 'already running' : 'app already started: reload to run again'); return; }
+  running = true;
+  for (const id of ['go', 'dl', 'wipe']) $(id).disabled = true;
   try {
     if (!('caches' in window) || !crypto.subtle) throw new Error('Cache Storage / WebCrypto unavailable (insecure context?)');
     const tp = await transport();
     const app = await download(tp);
-    if (withBoot) await boot(app, tp);
+    if (withBoot) { booted = true; await boot(app, tp); }
   } catch (e) {
     log(`✖ ${e?.message ?? e}`);
+  } finally {
+    running = false;
+    for (const id of ['go', 'dl', 'wipe']) if ($(id)) $(id).disabled = false;
   }
 }
 
