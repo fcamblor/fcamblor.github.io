@@ -59,18 +59,19 @@ async function postLog(url, entries) {
 
 // --- transport: `get(path)` returns a Response from the primary ---
 async function transport() {
-  const direct = $('direct').value.trim().replace(/\/$/, '');
+  // The shell's fields are gone once the app runs (background update): fall back to the URL / storage.
+  const direct = ($('direct')?.value ?? params.get('direct') ?? '').trim().replace(/\/$/, '');
   if (direct) {
     log(`direct mode → ${direct}`);
     window.tornadeDevlog?.setSender((entries) => postLog(direct + '/api/pwa/spike-log', entries));
     return { mode: 'direct', origin: direct, get: (p) => fetch(direct + p, { cache: 'no-store' }) };
   }
-  const owner = acceptLink($('owner').value.trim()) ?? localStorage.getItem(CURRENT);
+  const owner = acceptLink(($('owner')?.value ?? '').trim()) ?? localStorage.getItem(CURRENT);
   if (!owner) throw new Error('no instance: paste the pairing link or an EndpointId');
   log(`iroh connection to ${owner.slice(0, 12)}…`);
   const tc = performance.now();
   await window.tornadePwa.connect(owner);
-  log(`connected in ${(performance.now() - tc).toFixed(0)} ms`);
+  log(`connected in ${(performance.now() - tc).toFixed(0)} ms, relay ${window.tornadePwa.homeRelay?.() ?? '?'}`);
   const inst = instances().find((x) => x.id === owner);
   if (inst?.pairing) {
     log('pairing…');
@@ -86,8 +87,35 @@ async function transport() {
   return { mode: 'iroh', owner, get: (p) => window.tornadePwa.fetchPrimary(p) };
 }
 
+const keyOf = (tp) => (tp.mode === 'iroh' ? tp.owner.slice(0, 16) : 'direct');
+const cacheName = (key, build) => `tornade-app-${key}-${build}`;
+const prefixOf = (key, build) => new URL(`app/${key}/${build}/`, location.href).href;
+
+// One file, gzip-compressed on the wire when the primary supports it (the relay is the bottleneck).
+async function fetchFile(tp, f, stats) {
+  const path = f.path.split('/').map(encodeURIComponent).join('/');
+  if (stats.gz !== false && typeof DecompressionStream === 'function') {
+    const r = await tp.get('/api/pwa/gz/' + path);
+    if (r.ok) {
+      stats.gz = true;
+      const gz = await r.arrayBuffer();
+      stats.wire += gz.byteLength;
+      return new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+    }
+    if (r.status !== 404) throw new Error(`${f.path}: ${r.status}`);
+    stats.gz = false;
+    log('primary without /api/pwa/gz: uncompressed download');
+  }
+  const r = await tp.get('/' + path);
+  if (!r.ok) throw new Error(`${f.path}: ${r.status}`);
+  const buf = await r.arrayBuffer();
+  stats.wire += buf.byteLength;
+  return buf;
+}
+
 // --- download: manifest → missing files → SHA-256 check → Cache Storage ---
-async function download(tp) {
+// `cleanup`: drop the other builds afterwards (not while an older build is running in this page).
+async function download(tp, { cleanup = true } = {}) {
   const par = 4;
   const tm = performance.now();
   const res = await tp.get('/api/pwa/bundle');
@@ -98,9 +126,9 @@ async function download(tp) {
   const big = bundle.files.find((f) => f.path.endsWith('.wasm') && f.size > 30 * 1024 * 1024);
   if (big) log(`⚠ ${big.path} is ${kb(big.size)}: debug bundle?`);
 
-  const key = `${tp.mode === 'iroh' ? tp.owner.slice(0, 16) : 'direct'}`;
-  const prefix = new URL(`app/${key}/${bundle.build_id}/`, location.href).href;
-  const cache = await caches.open(`tornade-app-${key}-${bundle.build_id}`);
+  const key = keyOf(tp);
+  const prefix = prefixOf(key, bundle.build_id);
+  const cache = await caches.open(cacheName(key, bundle.build_id));
 
   // Reuse identical files from any previous build of this instance (differential update).
   const previous = (await caches.keys()).filter((n) => n.startsWith(`tornade-app-${key}-`) && !n.endsWith(bundle.build_id));
@@ -129,11 +157,10 @@ async function download(tp) {
   const td = performance.now();
   let done = 0;
   let got = 0;
+  const stats = { wire: 0, gz: undefined };
   const one = async (f) => {
     const t = performance.now();
-    const r = await tp.get('/' + f.path.split('/').map(encodeURIComponent).join('/'));
-    if (!r.ok) throw new Error(`${f.path}: ${r.status}`);
-    const buf = await r.arrayBuffer();
+    const buf = await fetchFile(tp, f, stats);
     const sha = hex(await crypto.subtle.digest('SHA-256', buf));
     if (sha !== f.sha256) throw new Error(`${f.path}: hash mismatch`);
     await cache.put(prefix + f.path, new Response(buf, { headers: { 'content-type': mimeOf(f.path), 'x-sha256': sha } }));
@@ -145,12 +172,12 @@ async function download(tp) {
   const queue = [...todo].sort((a, b) => b.size - a.size);
   await Promise.all(Array.from({ length: par }, async () => { while (queue.length) await one(queue.shift()); }));
   const s = (performance.now() - td) / 1000;
-  if (todo.length) log(`downloaded ${kb(got)} in ${s.toFixed(2)} s (${(got / 1024 / s).toFixed(0)} KiB/s)`);
+  if (todo.length) log(`downloaded ${kb(got)} (${kb(stats.wire)} on the wire${stats.gz ? ', gzip' : ''}) in ${s.toFixed(2)} s (${(stats.wire / 1024 / s).toFixed(0)} KiB/s)`);
 
   // Switch only once the set is complete, then drop the old builds.
   localStorage.setItem(`tornade.app.${key}`, bundle.build_id);
-  for (const name of previous) await caches.delete(name);
-  saveResult({ mode: tp.mode, build: bundle.build_id, files: bundle.files.length, total, downloaded: got, seconds: s });
+  if (cleanup) for (const name of previous) await caches.delete(name);
+  saveResult({ mode: tp.mode, build: bundle.build_id, files: bundle.files.length, total, downloaded: got, wire: stats.wire, gzip: !!stats.gz, seconds: s });
   return { prefix, cache, bundle };
 }
 
@@ -241,6 +268,74 @@ async function run(withBoot) {
   }
 }
 
+// --- immediate start from the cache, update in the background ---
+// The last complete build of the current instance, if every file of it is still cached.
+async function cachedApp(tp) {
+  const key = keyOf(tp);
+  const build = localStorage.getItem(`tornade.app.${key}`);
+  if (!build || !(await caches.has(cacheName(key, build)))) return null;
+  const cache = await caches.open(cacheName(key, build));
+  const prefix = prefixOf(key, build);
+  if (!(await cache.match(prefix + 'index.html'))) return null;
+  return { prefix, cache, bundle: { build_id: build, entry: 'index.html' } };
+}
+
+// Builds of this instance other than `keep` (left over by a background update).
+async function dropOtherBuilds(tp, keep) {
+  const key = keyOf(tp);
+  for (const n of await caches.keys()) {
+    if (n.startsWith(`tornade-app-${key}-`) && n !== cacheName(key, keep)) await caches.delete(n);
+  }
+}
+
+function showUpdateBanner() {
+  if (document.getElementById('tornade-update')) return;
+  const b = document.createElement('div');
+  b.id = 'tornade-update';
+  b.setAttribute('role', 'status');
+  b.style.cssText = 'position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:2147483647;display:flex;gap:12px;align-items:center;padding:10px 14px;border-radius:10px;background:#24242b;color:#e6e6ea;font:14px system-ui,sans-serif;box-shadow:0 4px 20px #0008';
+  b.innerHTML = '<span>A new version of Tornade is ready.</span>';
+  const btn = document.createElement('button');
+  btn.textContent = 'Reload';
+  btn.style.cssText = 'font:inherit;padding:6px 12px;border:0;border-radius:6px;background:#6fa7ee;color:#16161a;cursor:pointer';
+  btn.onclick = () => location.reload();
+  b.append(btn);
+  document.body.append(b);
+}
+
+async function startFromCache(tp) {
+  const app = await cachedApp(tp);
+  if (!app) return false;
+  log(`starting build ${app.bundle.build_id} from the cache`);
+  running = true;
+  booted = true;
+  try {
+    await boot(app, tp);
+  } catch (e) {
+    booted = false;
+    throw e;
+  } finally {
+    running = false;
+  }
+  dropOtherBuilds(tp, app.bundle.build_id).catch(() => {});
+  // Meanwhile: connect (the app does too, on the same link) and fetch a newer build if any.
+  (async () => {
+    try {
+      const live = await transport();
+      const next = await download(live, { cleanup: false });
+      if (next.bundle.build_id !== app.bundle.build_id) {
+        log(`update ${next.bundle.build_id} downloaded, ready on reload`);
+        showUpdateBanner();
+      } else {
+        log('build up to date');
+      }
+    } catch (e) {
+      log(`background update failed: ${e?.message ?? e}`);
+    }
+  })();
+  return true;
+}
+
 // --- UI wiring ---
 if ('serviceWorker' in navigator) {
   // tornade-pwa.js registers sw.js too; the registration is idempotent.
@@ -266,5 +361,11 @@ $('wipe').onclick = async () => {
 log(`shell ready (${navigator.userAgent.split(') ')[0]})`);
 log(`DecompressionStream gzip: ${typeof DecompressionStream === 'function' ? 'yes' : 'no'}`);
 navigator.storage?.persisted?.().then((p) => log(`persistent storage: ${p ? 'yes' : 'no'}`));
-if (linked || params.get('direct') || localStorage.getItem(CURRENT)) run(true);
+const pendingPairing = instances().some((x) => x.id === localStorage.getItem(CURRENT) && x.pairing);
+const known = params.get('direct')
+  ? { mode: 'direct', origin: params.get('direct').replace(/\/$/, '') }
+  : localStorage.getItem(CURRENT) ? { mode: 'iroh', owner: localStorage.getItem(CURRENT) } : null;
+if (known && !pendingPairing && !params.has('nocache')) {
+  startFromCache(known).then((started) => { if (!started) run(true); }).catch((e) => { log(`✖ ${e?.message ?? e}`); run(true); });
+} else if (linked || known) run(true);
 else log('no instance yet: scan the QR code shown by Tornade on your computer, or paste its pairing link');

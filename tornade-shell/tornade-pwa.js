@@ -3,6 +3,7 @@ import init, { connect as irohConnect, device_id } from './pkg/tornade_iroh_web.
 const isApi = (u) => u.origin === location.origin && u.pathname.startsWith('/api/');
 let ready = null;
 let connectedOwner = null;
+let currentLink = null;
 let wasm = null;
 const loadWasm = () => (wasm ??= init({ module_or_path: new URL('./pkg/tornade_iroh_web_bg.wasm', import.meta.url) }));
 
@@ -127,7 +128,7 @@ window.tornadePwa = {
     await loadWasm();
     connectedOwner = owner;
     ready = irohConnect(owner, undefined);
-    try { await ready; } catch (e) { ready = null; connectedOwner = null; throw e; }
+    try { currentLink = await ready; } catch (e) { ready = null; connectedOwner = null; throw e; }
   },
   /** SPIKE (ADR 0003): GET any path of the connected primary (static files included). */
   async fetchPrimary(path) {
@@ -135,6 +136,8 @@ window.tornadePwa = {
     const r = await (await ready).fetch('GET', path, [], undefined);
     return new Response(r.body, { status: r.status, headers: r.headers });
   },
+  /** The relay this device goes through (browsers only reach the primary through a relay). */
+  homeRelay() { return currentLink?.home_relay?.() ?? null; },
   async deviceId() { await loadWasm(); return device_id(); },
   standalone() { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; },
   pushSupported() { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; },
