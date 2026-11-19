@@ -8,9 +8,11 @@ const loadWasm = () => (wasm ??= init({ module_or_path: new URL('./pkg/tornade_i
 
 const nativeFetch = window.fetch.bind(window);
 window.fetch = async (input, opts) => {
-  const req = new Request(input, opts);
-  const url = new URL(req.url, location.href);
+  // Check the URL before building a Request: `new Request(request)` consumes the original body,
+  // which then breaks the native fetch of non-API requests (iroh's pkarr PUT, for one).
+  const url = new URL(input instanceof Request ? input.url : String(input), location.href);
   if (!isApi(url) || !ready) return nativeFetch(input, opts);
+  const req = new Request(input, opts);
   const link = await ready;
   const body = ['GET', 'HEAD'].includes(req.method) ? undefined : new Uint8Array(await req.arrayBuffer());
   const r = await link.fetch(req.method, url.pathname + url.search, [...req.headers], body);
