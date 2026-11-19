@@ -42,6 +42,10 @@ export class Link {
     [Symbol.dispose](): void;
     endpoint_id(): string;
     fetch(method: string, path: string, headers: Array<any>, body?: Uint8Array | null): Promise<any>;
+    /**
+     * The relay this device goes through (browsers have no UDP: all traffic is relayed).
+     */
+    home_relay(): string | undefined;
     websocket(path: string): Promise<any>;
 }
 
@@ -82,6 +86,7 @@ export interface InitOutput {
     readonly intounderlyingsource_pull: (a: number, b: any) => any;
     readonly link_endpoint_id: (a: number) => [number, number];
     readonly link_fetch: (a: number, b: number, c: number, d: number, e: number, f: any, g: number, h: number) => any;
+    readonly link_home_relay: (a: number) => [number, number];
     readonly link_websocket: (a: number, b: number, c: number) => any;
     readonly socket_close: (a: number, b: number, c: number, d: number) => any;
     readonly socket_next: (a: number) => any;

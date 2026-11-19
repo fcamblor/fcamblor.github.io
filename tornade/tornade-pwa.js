@@ -2,17 +2,27 @@ import init, { connect as irohConnect, device_id } from './pkg/tornade_iroh_web.
 
 const isApi = (u) => u.origin === location.origin && u.pathname.startsWith('/api/');
 let ready = null;
+let connectedOwner = null;
+let currentLink = null;
 let wasm = null;
 const loadWasm = () => (wasm ??= init({ module_or_path: new URL('./pkg/tornade_iroh_web_bg.wasm', import.meta.url) }));
 
 const nativeFetch = window.fetch.bind(window);
 window.fetch = async (input, opts) => {
-  const req = new Request(input, opts);
-  const url = new URL(req.url, location.href);
+  // Check the URL before building a Request: `new Request(request)` consumes the original body,
+  // which then breaks the native fetch of non-API requests (iroh's pkarr PUT, for one).
+  const url = new URL(input instanceof Request ? input.url : String(input), location.href);
   if (!isApi(url) || !ready) return nativeFetch(input, opts);
+  const req = new Request(input, opts);
   const link = await ready;
   const body = ['GET', 'HEAD'].includes(req.method) ? undefined : new Uint8Array(await req.arrayBuffer());
-  const r = await link.fetch(req.method, url.pathname + url.search, [...req.headers], body);
+  let r;
+  try {
+    r = await link.fetch(req.method, url.pathname + url.search, [...req.headers], body);
+  } catch (e) {
+    // Like a native fetch: callers (gloo-net) expect an Error, the wasm side may throw a string.
+    throw e instanceof Error ? e : new TypeError(`iroh fetch failed: ${e}`);
+  }
   return new Response([101, 204, 205, 304].includes(r.status) ? null : r.body, { status: r.status, headers: r.headers });
 };
 
@@ -113,10 +123,21 @@ window.tornadePwa = {
   },
   /** Connects the PWA to the `owner` instance; subsequent /api/… calls are routed to it. */
   async connect(owner) {
+    // The app started by the launcher reuses the launcher's connection (ADR 0003).
+    if (ready && connectedOwner === owner) return ready;
     await loadWasm();
+    connectedOwner = owner;
     ready = irohConnect(owner, undefined);
-    try { await ready; } catch (e) { ready = null; throw e; }
+    try { currentLink = await ready; } catch (e) { ready = null; connectedOwner = null; throw e; }
   },
+  /** GET any path of the connected primary (static files included), for the launcher. */
+  async fetchPrimary(path) {
+    if (!ready) throw new Error('not connected');
+    const r = await (await ready).fetch('GET', path, [], undefined);
+    return new Response(r.body, { status: r.status, headers: r.headers });
+  },
+  /** The relay this device goes through (browsers only reach the primary through a relay). */
+  homeRelay() { return currentLink?.home_relay?.() ?? null; },
   async deviceId() { await loadWasm(); return device_id(); },
   standalone() { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; },
   pushSupported() { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; },

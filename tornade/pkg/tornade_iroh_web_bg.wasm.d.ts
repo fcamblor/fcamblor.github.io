@@ -20,6 +20,7 @@ export const intounderlyingsource_cancel: (a: number) => void;
 export const intounderlyingsource_pull: (a: number, b: any) => any;
 export const link_endpoint_id: (a: number) => [number, number];
 export const link_fetch: (a: number, b: number, c: number, d: number, e: number, f: any, g: number, h: number) => any;
+export const link_home_relay: (a: number) => [number, number];
 export const link_websocket: (a: number, b: number, c: number) => any;
 export const socket_close: (a: number, b: number, c: number, d: number) => any;
 export const socket_next: (a: number) => any;

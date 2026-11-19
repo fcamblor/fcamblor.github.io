@@ -4,65 +4,136 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Tornade</title>
-<link rel="manifest" href="manifest.webmanifest" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16161a" />
+  <meta name="color-scheme" content="light dark" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Tornade" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <link rel="icon" href="favicon.ico" sizes="32x32" />
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  <link rel="stylesheet" href="./xterm-ae5fff20b9b7d4c7.css" integrity="sha384-8Xk9wy/gzEDUKrXtrmCFa2bBuK3BpjpDuL/p0SeKQX19Khl/M+lHOgD/CyYf7efP"/>
-  <link rel="stylesheet" href="./style-6dab7053304856cc.css" integrity="sha384-pl3pHaioXKAhDVzIUyada0Vla+TMcjRp8vuSSjnvGLgUMpbGqDp/cCwbmLJ764Pj"/>
-  
-  <script>window.__TORNADE_PWA__ = true;</script>
-<script type="module" src="tornade-pwa.js"></script>
-  <script src="./xterm-eb2aabf777f80b8a.js" integrity="sha384-M169f14mRZOXm3hD/v2Ti0ThIT/RnAQagXA9nlE15yHAtrW19gdePJh/HaTzUOe/"></script>
-  <script src="./addon-fit-c9bfe7faa6957349.js" integrity="sha384-iF+jqbuti4XlB64clWgFWYEscb+UnSRv3VgVikGYZu+otNFnSHr7y7NcKfBnGizn"></script>
-  <script src="./term-8d4adaac0b91b34b.js" integrity="sha384-ArDqXrKwglUsIwHDdJXcLeK2aCwKkHpYfAUzuSroY5xx4iPhi9vUBzqEty/hd5/Z"></script>
-  <script src="./review-363fd9ca9913000d.js" integrity="sha384-p9NpwSInhjhl4usLSfsZY36Cs4/LF8FgjB/uACenNT0oUieX3O+nPptupePObCYW"></script>
-  <script src="./find-49d56acff3b891dc.js" integrity="sha384-+WmOKZMDLYx3McWioStUY0jjBeFQXoR9/APXi6jkPCG60OtC8OQrJnh3Yd9mkbmc"></script>
-  
-<script type="module">
-import init, * as bindings from './tornade-frontend-b7e4a0b86011fd75.js';
-const wasm = await init({ module_or_path: './tornade-frontend-b7e4a0b86011fd75_bg.wasm' });
+  <link rel="preload" href="fonts/atkinson-next.woff2" as="font" type="font/woff2" crossorigin />
+  <!-- Debug mode (`?debug`, kept until `?debug=0`): capture everything from the first line on. -->
+  <script>
+    (() => {
+      const q = new URLSearchParams(location.search);
+      if (q.has('debug')) q.get('debug') === '0' ? localStorage.removeItem('tornade.debug') : localStorage.setItem('tornade.debug', '1');
+      if (localStorage.getItem('tornade.debug') === '1') document.write('<script src="devlog.js?v=b445c1aa40"><\/script>');
+    })();
+  </script>
+  <script src="i18n.js?v=b445c1aa40"></script>
+  <script type="module" src="tornade-pwa.js?v=b445c1aa40"></script>
+  <script type="module" src="launcher.js?v=b445c1aa40"></script>
+  <style id="launcher-style">
+    @font-face { font-family: "Atkinson Hyperlegible Next"; src: url("fonts/atkinson-next.woff2") format("woff2"); font-weight: 200 800; font-display: swap; }
+    :root {
+      color-scheme: light dark;
+      --h: 255;
+      --bg: light-dark(oklch(0.985 0.004 var(--h)), oklch(0.185 0.008 var(--h)));
+      --bg-2: light-dark(oklch(0.955 0.006 var(--h)), oklch(0.225 0.009 var(--h)));
+      --line: light-dark(oklch(0.88 0.008 var(--h)), oklch(0.32 0.010 var(--h)));
+      --line-strong: light-dark(oklch(0.78 0.010 var(--h)), oklch(0.42 0.012 var(--h)));
+      --fg: light-dark(oklch(0.24 0.012 var(--h)), oklch(0.92 0.006 var(--h)));
+      --muted: light-dark(oklch(0.50 0.012 var(--h)), oklch(0.70 0.010 var(--h)));
+      --accent: light-dark(oklch(0.52 0.13 var(--h)), oklch(0.72 0.12 var(--h)));
+      --accent-fg: light-dark(oklch(0.985 0.004 var(--h)), oklch(0.18 0.02 var(--h)));
+      --danger: light-dark(oklch(0.52 0.17 25), oklch(0.72 0.14 25));
+      --font: "Atkinson Hyperlegible Next", system-ui, sans-serif;
+      --mono: ui-monospace, Menlo, monospace;
+      --t-xs: 0.75rem; --t-sm: 0.8125rem; --t-md: 0.875rem; --t-read: 0.9375rem; --t-xl: 1.3125rem;
+      --radius: 6px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: var(--t-read)/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+    ::selection { background: color-mix(in oklch, var(--accent) 30%, transparent); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+    /* The mark sits exactly where the app's own boot loader paints it (centered, 96 px wide), so the
+       hand-over to the app does not move it. Everything else hangs below it. */
+    #launcher { position: fixed; inset: 0; display: grid; place-items: center; padding: 0 24px; }
+    .mark { position: relative; display: block; width: 96px; aspect-ratio: 420 / 364; color: var(--accent); }
+    .mark tornado-spin { position: absolute; inset: 0; background: currentColor; mask: url("tornado-lg.webp") center / contain no-repeat; -webkit-mask: url("tornado-lg.webp") center / contain no-repeat; }
+    #launcher[data-state="welcome"] .mark tornado-spin, #launcher[data-state="error"] .mark tornado-spin { mask-image: url("tornado-lg-still.svg"); -webkit-mask-image: url("tornado-lg-still.svg"); }
+    #launcher[data-state="error"] .mark { color: var(--muted); }
+    .below { position: absolute; top: calc(100% + 28px); left: 50%; translate: -50% 0; width: min(320px, calc(100vw - 48px)); text-align: center; color: var(--fg); }
 
-window.wasmBindings = bindings;
+    /* Loading: one line of status, then a hairline progress bar with its byte count. */
+    .status { margin: 0; font-size: var(--t-md); color: var(--muted); min-height: 1.5em; text-wrap: balance; }
+    .progress { margin: 14px auto 0; width: 200px; opacity: 0; transition: opacity 240ms var(--ease); }
+    #launcher[data-progress] .progress { opacity: 1; }
+    .bar { height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
+    .bar > i { display: block; height: 100%; width: 100%; background: var(--accent); border-radius: inherit; transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 300ms var(--ease); }
+    .bytes { margin-top: 8px; font-size: var(--t-xs); color: var(--muted); font-variant-numeric: tabular-nums; }
 
+    /* Welcome (no instance yet) and errors: a short text block, one action. */
+    .panel { display: none; }
+    #launcher[data-state="welcome"] .panel.welcome, #launcher[data-state="error"] .panel.error { display: block; }
+    #launcher[data-state="welcome"] .loading, #launcher[data-state="error"] .loading { display: none; }
+    h1 { margin: 0 0 8px; font-size: var(--t-xl); line-height: 1.25; font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
+    .panel p { margin: 0; color: var(--muted); text-wrap: pretty; }
+    .detail { margin-top: 8px !important; font-size: var(--t-sm); overflow-wrap: anywhere; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 18px; border: 0; border-radius: var(--radius); background: var(--accent); color: var(--accent-fg); font: 600 var(--t-md) var(--font); cursor: pointer; transition: filter 120ms; }
+    .btn:hover { filter: brightness(1.08); }
+    .btn:active { filter: brightness(0.95); }
+    .panel .btn { margin-top: 20px; }
+    .link { margin-top: 20px; padding: 8px 4px; border: 0; background: none; color: var(--accent); font: var(--t-md) var(--font); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+    form { display: none; margin-top: 16px; text-align: left; }
+    form.open { display: block; }
+    label { display: block; margin-bottom: 6px; font-size: var(--t-sm); color: var(--muted); }
+    .row { display: flex; gap: 8px; align-items: stretch; }
+    input { flex: 1; min-width: 0; height: 44px; margin: 0; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--bg-2); color: var(--fg); font: var(--t-md) var(--font); }
+    input::placeholder { color: var(--muted); }
+    input:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
+    #paste .btn { margin: 0; height: 44px; flex: none; }
+    .invalid { display: none; margin-top: 6px !important; font-size: var(--t-sm); color: var(--danger) !important; }
+    form[aria-invalid="true"] .invalid { display: block; }
 
-dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+    /* Debug mode only. */
+    #debug { position: fixed; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); display: flex; gap: 8px; }
+    #debug button { padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); color: var(--muted); font: var(--t-xs) var(--font); cursor: pointer; }
+    #debug-log { position: fixed; inset: auto 12px calc(52px + env(safe-area-inset-bottom)); max-height: 45vh; overflow: auto; margin: 0; padding: 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); color: var(--fg); font: 11px/1.45 var(--mono); white-space: pre-wrap; }
 
-</script>
-  <style>
-    /* Boot loader: painted before the wasm bundle loads, removed by main() right before mounting. */
-    #boot-loader { position: fixed; inset: 0; display: grid; place-items: center; background: light-dark(oklch(0.985 0.004 255), oklch(0.185 0.008 255)); color: light-dark(oklch(0.52 0.13 255), oklch(0.72 0.12 255)); color-scheme: light dark; opacity: 0; animation: boot-in 300ms ease-out 250ms forwards; }
-    #boot-loader tornado-spin { display: block; width: 96px; aspect-ratio: 420 / 364; background: currentColor; mask: url("tornado-lg.webp") center / contain no-repeat; -webkit-mask: url("tornado-lg.webp") center / contain no-repeat; }
-    @keyframes boot-in { to { opacity: 1; } }
     @media (prefers-reduced-motion: reduce) {
-      #boot-loader { animation: none; opacity: 1; }
-      #boot-loader tornado-spin { mask-image: url("tornado-lg-still.svg"); -webkit-mask-image: url("tornado-lg-still.svg"); }
+      .mark tornado-spin { mask-image: url("tornado-lg-still.svg"); -webkit-mask-image: url("tornado-lg-still.svg"); }
+      .bar > i, .progress { transition: none; }
     }
   </style>
-<link rel="modulepreload" href="./tornade-frontend-b7e4a0b86011fd75.js" crossorigin="anonymous" integrity="sha384-H7grIWQ7z7xvYy0foZ5dlMpsZ94p7hSUtR+Az/1SbTCO+2DoNACQaEULE7ff0dME"><link rel="preload" href="./tornade-frontend-b7e4a0b86011fd75_bg.wasm" crossorigin="anonymous" integrity="sha384-bMJsKjR3Qay3zFQtQCdA1ndPY79dZqAIM2CS4ZRIBlDwdO6K0TjxWp8+VDwoO1Bw" as="fetch" type="application/wasm"></head>
+</head>
 <body>
-  <div id="boot-loader" role="progressbar" aria-busy="true" aria-label="Tornade">
-    <tornado-spin></tornado-spin>
-  </div>
+  <main id="launcher" data-state="loading">
+    <div class="mark">
+      <tornado-spin aria-hidden="true"></tornado-spin>
+      <div class="below">
+        <div class="loading">
+          <p class="status" id="status" role="status" aria-live="polite"></p>
+          <div class="progress" id="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="bar"><i></i></div>
+            <div class="bytes" id="bytes"></div>
+          </div>
+        </div>
+        <section class="panel welcome" aria-labelledby="welcome-title">
+          <h1 id="welcome-title" data-t="welcome_title">Use Tornade on this device</h1>
+          <p data-t="welcome_body"></p>
+          <button type="button" class="link" id="paste-toggle" data-t="paste_toggle" aria-expanded="false" aria-controls="paste"></button>
+          <form id="paste" novalidate>
+            <label for="paste-input" data-t="paste_label"></label>
+            <div class="row">
+              <input id="paste-input" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…?owner=…&amp;pair=…" />
+              <button type="submit" class="btn" data-t="paste_go"></button>
+            </div>
+            <p class="invalid" data-t="invalid_link"></p>
+          </form>
+        </section>
+        <section class="panel error" aria-labelledby="error-title" aria-live="assertive">
+          <h1 id="error-title"></h1>
+          <p id="error-body"></p>
+          <p class="detail" id="error-detail"></p>
+          <button type="button" class="btn" id="retry" data-t="retry"></button>
+        </section>
+      </div>
+    </div>
+  </main>
 </body>
 </html>
