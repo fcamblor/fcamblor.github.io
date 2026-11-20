@@ -305,7 +305,7 @@ async function run(target) {
   }
 }
 
-// --- later launches: the cached build at once, a newer one in the background ---
+// --- later launches: the cached build at once; newer builds only when the user asks (see below) ---
 async function cachedApp(tp) {
   const key = keyOf(tp);
   const build = localStorage.getItem(`tornade.app.${key}`);
@@ -323,29 +323,6 @@ async function dropOtherBuilds(tp, keep) {
   }
 }
 
-// Shown over the running app: uses the app's own tokens (style.css), with fallbacks.
-function showUpdateBanner() {
-  if ($('tornade-update')) return;
-  const b = document.createElement('div');
-  b.id = 'tornade-update';
-  b.setAttribute('role', 'status');
-  b.style.cssText = [
-    'position:fixed', 'left:50%', 'bottom:calc(16px + env(safe-area-inset-bottom))', 'translate:-50% 0', 'z-index:2147483647',
-    'display:flex', 'gap:12px', 'align-items:center', 'max-width:calc(100vw - 32px)', 'padding:8px 8px 8px 14px',
-    'border:1px solid var(--line, #3a3a44)', 'border-radius:var(--radius, 6px)', 'background:var(--bg-panel, var(--bg, #1e1e24))',
-    'color:var(--fg, #e6e6ea)', 'font:var(--t-md, 0.875rem)/1.4 var(--font, system-ui, sans-serif)', 'box-shadow:0 6px 24px rgb(0 0 0 / 0.25)',
-  ].join(';');
-  const text = document.createElement('span');
-  text.textContent = t('update_ready');
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.textContent = t('reload');
-  btn.style.cssText = 'flex:none;min-height:36px;padding:0 14px;border:0;border-radius:var(--radius, 6px);background:var(--accent, #6fa7ee);color:var(--accent-fg, #16161a);font:600 var(--t-md, 0.875rem) var(--font, system-ui, sans-serif);cursor:pointer';
-  btn.onclick = () => location.reload();
-  b.append(text, btn);
-  document.body.append(b);
-}
-
 async function startFromCache(target) {
   const app = await cachedApp(target);
   if (!app) return false;
@@ -358,18 +335,11 @@ async function startFromCache(target) {
     throw e;
   }
   dropOtherBuilds(target, app.bundle.build_id).catch(() => {});
-  (async () => {
-    try {
-      const live = await transport(target);
-      const next = await download(live, { cleanup: false });
-      if (next.bundle.build_id !== app.bundle.build_id) {
-        dlog(`update ${next.bundle.build_id} ready on reload`);
-        showUpdateBanner();
-      }
-    } catch (e) {
-      dlog('background update failed:', e);
-    }
-  })();
+  // !!! NEVER download a newer build here, or anywhere without a human asking for it. !!!
+  // Every byte goes through an n0 relay, which rate-limits; a dev primary changes build at each
+  // save, so an automatic download would run at each start and get the device rate-limited.
+  // The running app detects new builds and lets the user choose: prepare in the background,
+  // or reload now (frontend/src/pwa.rs, `UpdateBanner`; ADR 0003, boot sequence step 6).
   return true;
 }
 

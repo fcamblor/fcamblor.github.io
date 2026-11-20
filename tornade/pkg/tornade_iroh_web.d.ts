@@ -43,7 +43,7 @@ export class Link {
     endpoint_id(): string;
     fetch(method: string, path: string, headers: Array<any>, body?: Uint8Array | null): Promise<any>;
     /**
-     * The relay this device goes through (browsers have no UDP: all traffic is relayed).
+     * No longer known on this side: the instance reports the actual path of each device.
      */
     home_relay(): string | undefined;
     websocket(path: string): Promise<any>;
@@ -59,6 +59,9 @@ export class Socket {
     send_text(text: string): Promise<any>;
 }
 
+/**
+ * `relay` is kept for compatibility with older shells: the dial now resolves the instance by its id.
+ */
 export function connect(owner: string, relay?: string | null): Promise<Link>;
 
 export function device_id(): string;
@@ -96,11 +99,15 @@ export interface InitOutput {
     readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke___js_sys_26f2c7355a4b2907___Function_fn_wasm_bindgen_4aa94627c470bcf4___JsValue_____wasm_bindgen_4aa94627c470bcf4___sys__Undefined___js_sys_26f2c7355a4b2907___Function_fn_wasm_bindgen_4aa94627c470bcf4___JsValue_____wasm_bindgen_4aa94627c470bcf4___sys__Undefined_______true_: (a: number, b: number, c: any, d: any) => void;
     readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke___wasm_bindgen_4aa94627c470bcf4___JsValue__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_4aa94627c470bcf4___JsError___true_: (a: number, b: number, c: any) => [number, number];
     readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke___wasm_bindgen_4aa94627c470bcf4___JsValue______true_: (a: number, b: number, c: any) => void;
-    readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke___web_sys_bb92c2f6245e6378___features__gen_CloseEvent__CloseEvent______true_: (a: number, b: number, c: any) => void;
-    readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke___web_sys_bb92c2f6245e6378___features__gen_MessageEvent__MessageEvent______true_: (a: number, b: number, c: any) => void;
+    readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke___web_sys_9b63e4c4c88f2d05___features__gen_CloseEvent__CloseEvent______true_: (a: number, b: number, c: any) => void;
+    readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke___web_sys_9b63e4c4c88f2d05___features__gen_MessageEvent__MessageEvent______true_: (a: number, b: number, c: any) => void;
+    readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke___web_sys_9b63e4c4c88f2d05___features__gen_RtcDataChannelEvent__RtcDataChannelEvent______true_: (a: number, b: number, c: any) => void;
+    readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke___web_sys_9b63e4c4c88f2d05___features__gen_RtcDataChannelEvent__RtcDataChannelEvent______true__26: (a: number, b: number, c: any) => void;
+    readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke___web_sys_9b63e4c4c88f2d05___features__gen_RtcDataChannelEvent__RtcDataChannelEvent______true__27: (a: number, b: number, c: any) => void;
     readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke_______true_: (a: number, b: number) => void;
     readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke_______true__1_: (a: number, b: number) => void;
     readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke_______true__2_: (a: number, b: number) => void;
+    readonly wasm_bindgen_4aa94627c470bcf4___convert__closures_____invoke_______true__3_: (a: number, b: number) => void;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
     readonly __wbindgen_exn_store: (a: number) => void;
