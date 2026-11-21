@@ -330,6 +330,9 @@ async function startFromCache(target) {
   started = true;
   try {
     await boot(app, target);
+    // No `transport()` on this path: enable the upload here, through the app's own `/api` routing
+    // (direct: the primary's origin; iroh: the bridge, which connects on first use).
+    if (debug) window.tornadeDevlog.setSender((e) => postLog((target.mode === 'direct' ? target.origin : '') + '/api/pwa/device-log', e));
   } catch (e) {
     started = false;
     throw e;
