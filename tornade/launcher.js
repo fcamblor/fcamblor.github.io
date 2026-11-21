@@ -344,7 +344,18 @@ async function startFromCache(target) {
 }
 
 // --- debug mode: logs at hand on the device ---
+// Own stylesheet, self-contained: the launcher's is removed when the app starts, and the buttons
+// must stay usable over the app (top right, small, above everything).
+const DEBUG_CSS = `
+#debug { position: fixed; z-index: 2147483647; right: 8px; top: calc(8px + env(safe-area-inset-top)); display: flex; gap: 6px; opacity: .75; }
+#debug button { padding: 4px 8px; border: 1px solid #555; border-radius: 6px; background: #222; color: #ddd; font: 12px system-ui, sans-serif; cursor: pointer; }
+#debug-log { position: fixed; z-index: 2147483647; inset: calc(44px + env(safe-area-inset-top)) 8px auto; max-height: 50vh; overflow: auto; margin: 0; padding: 10px; border: 1px solid #555; border-radius: 6px; background: #111; color: #eee; font: 11px/1.45 ui-monospace, monospace; white-space: pre-wrap; }`;
+
 function debugTools() {
+  const style = document.createElement('style');
+  style.id = 'debug-style';
+  style.textContent = DEBUG_CSS;
+  document.head.append(style);
   const box = document.createElement('div');
   box.id = 'debug';
   const pre = document.createElement('pre');
