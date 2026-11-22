@@ -20,8 +20,17 @@
     if (typeof a === 'string') return a;
     try { return JSON.stringify(a); } catch { return String(a); }
   };
+  // High-volume lines that say nothing about a failure: dropping them keeps the upload (which
+  // shares the phone's link) close to real time. Still shown in the browser console.
+  const NOISE = [
+    /target=iroh_webrtc_transport::browser_runtime::stream /, // one per stream open/close
+    /relay\.n0\.iroh\.link\.\/ping failed .*AbortError/, // relay probes cancelled on purpose
+    /outside a reactive tracking context/, // Leptos dev warning
+  ];
   const push = (level, args) => {
-    const entry = { session, at: new Date().toISOString(), t: Math.round(performance.now() - t0), level, url: location.href, msg: args.map(fmt).join(' ').slice(0, 4000) };
+    const msg = args.map(fmt).join(' ').slice(0, 4000);
+    if (NOISE.some((re) => re.test(msg))) return;
+    const entry = { session, at: new Date().toISOString(), t: Math.round(performance.now() - t0), level, url: location.href, msg };
     pending.push(entry);
     all.push(entry);
     if (all.length > MAX) all.shift();
